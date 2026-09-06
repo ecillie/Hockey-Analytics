@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Create and merge Dev → NonProd
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PROMOTION_TOKEN }}
         run: |
           PR_NUMBER=$(gh pr list \
             --repo "${{ github.repository }}" \
@@ -55,7 +55,7 @@ jobs:
     steps:
       - name: Create and merge NonProd → Prod
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PROMOTION_TOKEN }}
         run: |
           PR_NUMBER=$(gh pr list \
             --repo "${{ github.repository }}" \

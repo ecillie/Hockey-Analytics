@@ -53,18 +53,42 @@ The PostgreSQL schema is located at:
 backend/database/schema.sql
 ```
 
-Database connection:
+Install the dependencies, copy the environment template, and enter your local
+PostgreSQL credentials:
 
 ```bash
-DATABASE_URL=postgresql://user:password@localhost:5432/hockey_analytics
+python -m pip install -r backend/requirements.txt
+cp backend/.env.example backend/.env
 ```
 
-## Running the Data Pipeline
+Apply `backend/database/schema.sql` manually before running a loader. The
+application uses `ENV=dev`, `ENV=nonprod`, or `ENV=prod` to select its database
+configuration. Development can use the individual `DB_*` values. Nonprod and
+prod use `DATABASE_URL` or their scoped `NONPROD_DATABASE_URL` /
+`PROD_DATABASE_URL` value supplied by the deployment environment. The
+application does not create the schema automatically.
+
+## Running the Data Collection
 
 From `backend/`:
 
 ```bash
 python -m app.ScriptingFiles.FullDataScript.run_all
+```
+
+This loads checked-in player/goalie and current-season MoneyPuck data, NHL rosters,
+historical NHL season statistics, active CapWages contracts, and the current
+schedule, then refreshes roster statuses. Each stage is idempotent and targets
+the schema in `backend/database/schema.sql`.
+
+The checked-in team and line aggregate CSVs remain source assets: the current
+schema intentionally has player/goalie stat tables but no team- or line-stat
+tables.
+
+To run only the roster-status refresh:
+
+```bash
+python -m app.ScriptingFiles.FullDataScript.populate_roster_status
 ```
 
 Run tests with:

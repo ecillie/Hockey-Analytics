@@ -1,4 +1,4 @@
-name: Environment Promotion PRs
+name: Environment Promotion
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
 
 jobs:
@@ -18,11 +18,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Open Dev → NonProd PR
+      - name: Create and merge Dev → NonProd
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          EXISTING_PR=$(gh pr list \
+          PR_NUMBER=$(gh pr list \
             --repo "${{ github.repository }}" \
             --base "NonProd" \
             --head "Dev" \
@@ -30,27 +30,34 @@ jobs:
             --json number \
             --jq '.[0].number')
 
-          if [ -n "$EXISTING_PR" ]; then
-            echo "Dev → NonProd PR already exists: #$EXISTING_PR"
-          else
-            gh pr create \
+          if [ -z "$PR_NUMBER" ]; then
+            PR_URL=$(gh pr create \
               --repo "${{ github.repository }}" \
               --base "NonProd" \
               --head "Dev" \
               --title "Promote Dev to NonProd" \
-              --body "Automated promotion PR from \`Dev\` to \`NonProd\`."
+              --body "Automated promotion from \`Dev\` to \`NonProd\`.")
+
+            PR_NUMBER=$(echo "$PR_URL" | awk -F/ '{print $NF}')
           fi
+
+          echo "Merging PR #$PR_NUMBER"
+
+          gh pr merge "$PR_NUMBER" \
+            --repo "${{ github.repository }}" \
+            --merge \
+            --admin
 
   nonprod-to-prod:
     if: github.ref == 'refs/heads/NonProd'
     runs-on: ubuntu-latest
 
     steps:
-      - name: Open NonProd → Prod PR
+      - name: Create and merge NonProd → Prod
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          EXISTING_PR=$(gh pr list \
+          PR_NUMBER=$(gh pr list \
             --repo "${{ github.repository }}" \
             --base "Prod" \
             --head "NonProd" \
@@ -58,13 +65,20 @@ jobs:
             --json number \
             --jq '.[0].number')
 
-          if [ -n "$EXISTING_PR" ]; then
-            echo "NonProd → Prod PR already exists: #$EXISTING_PR"
-          else
-            gh pr create \
+          if [ -z "$PR_NUMBER" ]; then
+            PR_URL=$(gh pr create \
               --repo "${{ github.repository }}" \
               --base "Prod" \
               --head "NonProd" \
               --title "Promote NonProd to Prod" \
-              --body "Automated promotion PR from \`NonProd\` to \`Prod\`."
+              --body "Automated promotion from \`NonProd\` to \`Prod\`.")
+
+            PR_NUMBER=$(echo "$PR_URL" | awk -F/ '{print $NF}')
           fi
+
+          echo "Merging PR #$PR_NUMBER"
+
+          gh pr merge "$PR_NUMBER" \
+            --repo "${{ github.repository }}" \
+            --merge \
+            --admin

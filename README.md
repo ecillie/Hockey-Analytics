@@ -247,6 +247,30 @@ python3 -m app.ScriptingFiles.save_goalie_advanced_stats
 
 Note: The NHL API has rate limits. The scripts include delays and retry logic to handle this.
 
+### Roster-status sync
+
+The revamped backend supports the salary-cap roster classifications `ACTIVE`,
+`MINORS`, `LTIR`, and `UNKNOWN`. It uses the free NHL current-roster API and the
+public AHL HockeyTech LeagueStat feed; it does not infer a minor-league assignment
+merely because a player is absent from an NHL roster. LTIR is maintained through
+manual date-ranged overrides.
+
+After manually applying `backend/database/schema.sql`, populate roster statuses
+from `backend/`:
+
+```bash
+python -m app.ScriptingFiles.FullDataScript.populate_roster_status
+```
+
+See [`backend/database/README.md`](backend/database/README.md) for matching,
+failure-handling, LTIR override, and configuration details.
+
+To execute the entire full-data load, including roster classification, use:
+
+```bash
+python -m app.ScriptingFiles.FullDataScript.run_all
+```
+
 ## Machine Learning Pipeline
 
 ### Training Models
@@ -352,4 +376,3 @@ Options:
 - **Verbose / traceback**: configured in `pytest.ini` (`-v --tb=short`)
 
 Scraping scripts under `app/ScriptingFiles/` are omitted from coverage runs via `backend/.coveragerc`; lines marked with `# pragma: no cover` are excluded from coverage reports.
-

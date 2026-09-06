@@ -23,6 +23,31 @@ Conventions:
 This directory is intentionally migration-tool agnostic. Once the initial schema
 has been deployed, future database changes should be introduced as migrations.
 
+## Initial setup
+
+From the repository root, install the backend dependencies and create your local
+environment file:
+
+```bash
+python -m pip install -r backend/requirements.txt
+cp backend/.env.example backend/.env
+```
+
+Edit `backend/.env` with the PostgreSQL credentials for the database you intend
+to populate. The real `.env` file is ignored by Git; `.env.example` documents the
+required settings without storing secrets.
+
+`ENV` is required and must be `dev`, `nonprod`, or `prod`. In development, use
+the local `DB_*` settings or a URL. Nonprod and prod share the deployed connection
+strategy: provide `DATABASE_URL` in each environment, or use the explicitly
+scoped `NONPROD_DATABASE_URL` and `PROD_DATABASE_URL` variables. Scoped URLs take
+precedence over the shared variable, preventing a local file containing several
+URLs from selecting the wrong database.
+
+Apply `backend/database/schema.sql` manually to an empty PostgreSQL database.
+The Python database module only connects to and verifies that schema; it does not
+create tables.
+
 ## Roster status
 
 `schema.sql` creates `players.roster_status` with these values:
@@ -48,20 +73,8 @@ From `backend/`, run:
 python -m app.ScriptingFiles.FullDataScript.populate_roster_status
 ```
 
-To run the complete full-data population sequence, including roster status, use:
-
-```bash
-python -m app.ScriptingFiles.FullDataScript.run_all
-```
-
-The full runner loads players and contracts before statistics because statistics
-must be associated with an existing player and the legacy loaders currently use
-contract-season matching.
-
-Configure the database with `DATABASE_URL`, or with the existing `DB_USER`,
-`DB_PASSWORD`, `DB_HOST`, `DB_PORT`, and `DB_NAME` variables. `AHL_SEASON_ID`
-can override the AHL feed's current season when its automatic selection is
-between seasons.
+`AHL_SEASON_ID` can override the AHL feed's current season when its automatic
+selection is between seasons.
 
 Limitations of the free-only approach:
 

@@ -41,11 +41,11 @@ jobs:
             PR_NUMBER=$(echo "$PR_URL" | awk -F/ '{print $NF}')
           fi
 
-          echo "Merging PR #$PR_NUMBER"
+          echo "Squash merging PR #$PR_NUMBER"
 
           gh pr merge "$PR_NUMBER" \
             --repo "${{ github.repository }}" \
-            --merge \
+            --squash \
             --admin
 
   nonprod-to-prod:
@@ -76,9 +76,9 @@ jobs:
             PR_NUMBER=$(echo "$PR_URL" | awk -F/ '{print $NF}')
           fi
 
-          echo "Merging PR #$PR_NUMBER"
+          echo "Squash merging PR #$PR_NUMBER"
 
           gh pr merge "$PR_NUMBER" \
             --repo "${{ github.repository }}" \
-            --merge \
+            --squash \
             --admin

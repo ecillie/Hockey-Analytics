@@ -1,6 +1,6 @@
 # Hockey Analytics
 
-A backend-focused NHL analytics project for collecting and organizing player, contract, roster, and salary-cap data.
+An NHL analytics project for collecting player and contract data, modeling player value, and translating performance into fair salary-cap value.
 
 ## Current Focus
 
@@ -31,6 +31,10 @@ The project prioritizes free or publicly available data sources.
 * PostgreSQL
 * pytest
 * GitHub Actions
+* React 19
+* TypeScript
+* Next.js
+* Tailwind CSS
 
 ## Project Structure
 
@@ -42,8 +46,26 @@ Hockey-Analytics/
 │   ├── app/
 │   ├── database/
 │   └── tests/
+├── frontend/
+│   ├── app/
+│   ├── components/
+│   ├── data/
+│   └── services/
+├── ml/
 └── README.md
 ```
+
+## Running the Frontend
+
+The frontend currently uses realistic mock valuation data and does not require the backend or database.
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Create a production build with `npm run build` and run lint with `npm run lint`.
 
 ## Database
 

@@ -46,6 +46,24 @@ class DatabaseSettings:
     connect_timeout_seconds: int = 10
 
 
+@dataclass(frozen=True)
+class ApiSettings:
+    cors_origins: tuple[str, ...]
+
+
+@lru_cache(maxsize=1)
+def get_api_settings() -> ApiSettings:
+    """Return HTTP settings without requiring database configuration."""
+    _load_backend_env()
+    raw_origins = os.getenv(
+        "CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173"
+    )
+    origins = tuple(origin.strip() for origin in raw_origins.split(",") if origin.strip())
+    if not origins:
+        raise ConfigurationError("CORS_ORIGINS must contain at least one origin")
+    return ApiSettings(cors_origins=origins)
+
+
 @lru_cache(maxsize=1)
 def get_database_settings() -> DatabaseSettings:
     _load_backend_env()

@@ -44,8 +44,7 @@ jobs:
           echo "Merging PR #$PR_NUMBER"
           gh pr merge "$PR_NUMBER" \
             --repo "${{ github.repository }}" \
-            --merge \
-            --admin
+            --merge
 
   nonprod-to-prod:
     if: github.ref == 'refs/heads/NonProd'
@@ -78,6 +77,4 @@ jobs:
           echo "Merging PR #$PR_NUMBER"
           gh pr merge "$PR_NUMBER" \
             --repo "${{ github.repository }}" \
-            --merge \
-            --admin
-
+            --merge

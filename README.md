@@ -74,7 +74,7 @@ The FastAPI backend implements the complete contract in
 `docs/api-contract.md`. After configuring PostgreSQL and applying the schema:
 
 ```bash
-python -m pip install -r backend/requirements.txt
+python -m pip install -r backend/requirements-dev.txt
 cd backend
 uvicorn app.main:app --reload
 ```
@@ -82,6 +82,8 @@ uvicorn app.main:app --reload
 The API listens on `http://localhost:8000`, serves interactive documentation at
 `/docs`, and exposes a database-aware health check at `/api/health`. See
 `backend/README.md` for frontend cutover, CORS, testing, and container commands.
+For production, follow the complete
+[Vercel and Neon deployment guide](docs/deployment-vercel-neon.md).
 
 ## Database
 
@@ -91,11 +93,11 @@ The PostgreSQL schema is located at:
 backend/database/schema.sql
 ```
 
-Install the dependencies, copy the environment template, and enter your local
+Install the development dependencies, copy the environment template, and enter your local
 PostgreSQL credentials:
 
 ```bash
-python -m pip install -r backend/requirements.txt
+python -m pip install -r backend/requirements-dev.txt
 cp backend/.env.example backend/.env
 ```
 

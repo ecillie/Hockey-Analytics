@@ -33,8 +33,9 @@ The project prioritizes free or publicly available data sources.
 * GitHub Actions
 * React 19
 * TypeScript
-* Next.js
-* Tailwind CSS
+* Vite
+* TypeScript
+* React Router
 
 ## Project Structure
 
@@ -47,10 +48,10 @@ Hockey-Analytics/
 │   ├── database/
 │   └── tests/
 ├── frontend/
-│   ├── app/
+│   ├── src/api/
 │   ├── components/
-│   ├── data/
-│   └── services/
+│   ├── mocks/
+│   └── pages/
 ├── ml/
 └── README.md
 ```

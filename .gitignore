@@ -12,3 +12,9 @@ backend/.pytest_cache/
 
 ml/models/*.joblib
 ml/evaluation/outputs/
+
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/coverage/
+frontend/*.tsbuildinfo

@@ -44,11 +44,15 @@ class DatabaseSettings:
     environment: AppEnvironment
     database_url: str
     connect_timeout_seconds: int = 10
+    pool_size: int = 2
+    max_overflow: int = 3
+    pool_recycle_seconds: int = 300
 
 
 @dataclass(frozen=True)
 class ApiSettings:
     cors_origins: tuple[str, ...]
+    cors_origin_regex: str | None
 
 
 @lru_cache(maxsize=1)
@@ -61,7 +65,8 @@ def get_api_settings() -> ApiSettings:
     origins = tuple(origin.strip() for origin in raw_origins.split(",") if origin.strip())
     if not origins:
         raise ConfigurationError("CORS_ORIGINS must contain at least one origin")
-    return ApiSettings(cors_origins=origins)
+    origin_regex = os.getenv("CORS_ORIGIN_REGEX", "").strip() or None
+    return ApiSettings(cors_origins=origins, cors_origin_regex=origin_regex)
 
 
 @lru_cache(maxsize=1)
@@ -118,8 +123,25 @@ def get_database_settings() -> DatabaseSettings:
     if timeout <= 0:
         raise ConfigurationError("DB_CONNECT_TIMEOUT must be positive")
 
+    pool_values: dict[str, int] = {}
+    for env_name, field_name, default, minimum in (
+        ("DB_POOL_SIZE", "pool_size", 2, 1),
+        ("DB_MAX_OVERFLOW", "max_overflow", 3, 0),
+        ("DB_POOL_RECYCLE_SECONDS", "pool_recycle_seconds", 300, 1),
+    ):
+        value_text = os.getenv(env_name, str(default)).strip() or str(default)
+        try:
+            value = int(value_text)
+        except ValueError as exc:
+            raise ConfigurationError(f"{env_name} must be an integer") from exc
+        if value < minimum:
+            qualifier = "nonnegative" if minimum == 0 else "positive"
+            raise ConfigurationError(f"{env_name} must be {qualifier}")
+        pool_values[field_name] = value
+
     return DatabaseSettings(
         environment=environment,
         database_url=database_url,
         connect_timeout_seconds=timeout,
+        **pool_values,
     )

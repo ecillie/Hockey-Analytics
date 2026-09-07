@@ -18,3 +18,7 @@ frontend/dist/
 frontend/.vite/
 frontend/coverage/
 frontend/*.tsbuildinfo
+
+**/.vercel/
+**/.env.local
+**/.env.*.local

@@ -10,9 +10,5 @@ __pycache__/
 
 backend/.pytest_cache/
 
-frontend/node_modules/
-frontend/package-lock.json
-frontend/dist/
-
 ml/models/*.joblib
 ml/evaluation/outputs/

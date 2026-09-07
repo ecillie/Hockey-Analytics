@@ -19,6 +19,10 @@ settings = get_database_settings()
 engine = create_engine(
     settings.database_url,
     pool_pre_ping=True,
+    pool_size=settings.pool_size,
+    max_overflow=settings.max_overflow,
+    pool_recycle=settings.pool_recycle_seconds,
+    pool_use_lifo=True,
     connect_args={"connect_timeout": settings.connect_timeout_seconds},
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

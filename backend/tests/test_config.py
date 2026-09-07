@@ -33,6 +33,9 @@ class DatabaseSettingsTests(unittest.TestCase):
         )
         self.assertEqual(settings.environment, AppEnvironment.NONPROD)
         self.assertEqual(settings.connect_timeout_seconds, 7)
+        self.assertEqual(settings.pool_size, 2)
+        self.assertEqual(settings.max_overflow, 3)
+        self.assertEqual(settings.pool_recycle_seconds, 300)
 
     def test_component_settings_are_url_encoded(self):
         settings = self.load_with(
@@ -74,6 +77,16 @@ class DatabaseSettingsTests(unittest.TestCase):
         with self.assertRaisesRegex(ConfigurationError, "ENV must be one of"):
             self.load_with({"DATABASE_URL": "postgresql://example.test/db"})
 
+    def test_database_pool_settings_are_validated(self):
+        with self.assertRaisesRegex(ConfigurationError, "DB_POOL_SIZE"):
+            self.load_with(
+                {
+                    "ENV": "prod",
+                    "DATABASE_URL": "postgresql://example.test/db",
+                    "DB_POOL_SIZE": "0",
+                }
+            )
+
     def test_api_cors_origins_are_trimmed(self):
         get_api_settings.cache_clear()
         with patch("app.config._load_backend_env"), patch.dict(
@@ -85,6 +98,23 @@ class DatabaseSettingsTests(unittest.TestCase):
         self.assertEqual(
             settings.cors_origins,
             ("https://trade.example", "https://preview.example"),
+        )
+        self.assertIsNone(settings.cors_origin_regex)
+
+    def test_api_cors_preview_regex_is_optional(self):
+        get_api_settings.cache_clear()
+        with patch("app.config._load_backend_env"), patch.dict(
+            os.environ,
+            {
+                "CORS_ORIGINS": "https://trade.example",
+                "CORS_ORIGIN_REGEX": r"^https://trade-[a-z0-9-]+\.vercel\.app$",
+            },
+            clear=True,
+        ):
+            settings = get_api_settings()
+        self.assertEqual(
+            settings.cors_origin_regex,
+            r"^https://trade-[a-z0-9-]+\.vercel\.app$",
         )
 
 

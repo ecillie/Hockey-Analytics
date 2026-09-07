@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "fastapi",
+  "functions": {
+    "index.py": {
+      "excludeFiles": "{tests/**,app/ScriptingFiles/**,database/**,Dockerfile,.dockerignore,README.md,requirements-dev.txt}"
+    }
+  }
+}

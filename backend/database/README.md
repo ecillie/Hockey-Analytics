@@ -29,7 +29,7 @@ From the repository root, install the backend dependencies and create your local
 environment file:
 
 ```bash
-python -m pip install -r backend/requirements.txt
+python -m pip install -r backend/requirements-dev.txt
 cp backend/.env.example backend/.env
 ```
 

@@ -1,0 +1,2 @@
+import { Link } from 'react-router-dom'
+export function NotFoundPage() { return <div className="not-found"><span>404</span><h1>Page not found</h1><p>The requested NHL data view does not exist.</p><Link className="button" to="/">Return to overview</Link></div> }

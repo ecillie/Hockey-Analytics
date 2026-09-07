@@ -2,12 +2,13 @@ import os
 import unittest
 from unittest.mock import patch
 
-from app.config import AppEnvironment, ConfigurationError, get_database_settings
+from app.config import AppEnvironment, ConfigurationError, get_api_settings, get_database_settings
 
 
 class DatabaseSettingsTests(unittest.TestCase):
     def tearDown(self):
         get_database_settings.cache_clear()
+        get_api_settings.cache_clear()
 
     def load_with(self, environment):
         get_database_settings.cache_clear()
@@ -72,6 +73,19 @@ class DatabaseSettingsTests(unittest.TestCase):
     def test_environment_is_required_and_validated(self):
         with self.assertRaisesRegex(ConfigurationError, "ENV must be one of"):
             self.load_with({"DATABASE_URL": "postgresql://example.test/db"})
+
+    def test_api_cors_origins_are_trimmed(self):
+        get_api_settings.cache_clear()
+        with patch("app.config._load_backend_env"), patch.dict(
+            os.environ,
+            {"CORS_ORIGINS": "https://trade.example, https://preview.example"},
+            clear=True,
+        ):
+            settings = get_api_settings()
+        self.assertEqual(
+            settings.cors_origins,
+            ("https://trade.example", "https://preview.example"),
+        )
 
 
 if __name__ == "__main__":

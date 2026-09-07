@@ -68,6 +68,21 @@ npm run dev
 
 Create a production build with `npm run build` and run lint with `npm run lint`.
 
+## Running the API
+
+The FastAPI backend implements the complete contract in
+`docs/api-contract.md`. After configuring PostgreSQL and applying the schema:
+
+```bash
+python -m pip install -r backend/requirements.txt
+cd backend
+uvicorn app.main:app --reload
+```
+
+The API listens on `http://localhost:8000`, serves interactive documentation at
+`/docs`, and exposes a database-aware health check at `/api/health`. See
+`backend/README.md` for frontend cutover, CORS, testing, and container commands.
+
 ## Database
 
 The PostgreSQL schema is located at:

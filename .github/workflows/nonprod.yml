@@ -31,6 +31,22 @@ jobs:
           CI_RESULT: ${{ needs.ci.result }}
         run: test "$CI_RESULT" = "success"
 
+  merge-to-nonprod:
+    name: Enable automatic merge to NonProd
+    if: ${{ github.event_name == 'pull_request' && needs.required.result == 'success' }}
+    needs: [required]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Enable auto-merge for the validated pull request
+        env:
+          GH_TOKEN: ${{ secrets.PROMOTION_TOKEN }}
+        run: |
+          gh pr merge "${{ github.event.pull_request.number }}" \
+            --repo "${{ github.repository }}" \
+            --auto \
+            --merge
+
   promote:
     name: Promote NonProd to Prod
     if: ${{ github.event_name == 'push' && needs.required.result == 'success' }}
@@ -41,7 +57,7 @@ jobs:
       group: environment-promotion
       cancel-in-progress: false
     steps:
-      - name: Create or update promotion pull request
+      - name: Create or find promotion pull request
         env:
           GH_TOKEN: ${{ secrets.PROMOTION_TOKEN }}
         run: |
@@ -63,7 +79,4 @@ jobs:
             PR_NUMBER=${PR_URL##*/}
           fi
 
-          gh pr merge "$PR_NUMBER" \
-            --repo "${{ github.repository }}" \
-            --auto \
-            --merge
+          echo "Promotion PR #$PR_NUMBER will be validated and merged by the Prod workflow."

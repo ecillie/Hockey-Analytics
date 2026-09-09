@@ -2,18 +2,23 @@
 
 TradeValue uses three environment workflows:
 
-- `Dev` validates pull requests into and pushes to `Dev`. After a successful
-  push, it opens or updates the `Dev → NonProd` promotion pull request.
-- `NonProd` validates pull requests into and pushes to `NonProd`. After a
-  successful push, it opens or updates the `NonProd → Prod` promotion pull
+- `Dev` validates and auto-merges pull requests into `Dev`. After the resulting
+  successful push, it opens or updates the `Dev → NonProd` promotion pull
   request.
-- `Prod` validates pull requests into and pushes to `Prod`. It does not promote
-  further.
+- `NonProd` validates and auto-merges pull requests into `NonProd`. After the
+  resulting successful push, it opens or updates the `NonProd → Prod`
+  promotion pull request.
+- `Prod` validates and auto-merges pull requests into `Prod`. It does not
+  promote further.
 
 All three call `_reusable-ci.yml`, so backend tests, ML tests, frontend lint,
 frontend tests, and the frontend production build use the same implementation.
-The `Dev` and `NonProd` promotion jobs run only after their environment's
-required aggregate job succeeds on a branch push.
+Each destination workflow owns the merge into its branch. Its merge job runs
+only after that environment's required aggregate job succeeds. GitHub
+auto-merge remains responsible for waiting on every other check required by the
+destination branch, including Vercel preview checks when those are configured
+as required. The Dev and NonProd push jobs only create the next promotion pull
+request; they do not merge it themselves.
 
 ## Repository settings
 
@@ -82,9 +87,10 @@ and [required-status-check documentation](https://docs.github.com/en/repositorie
 
 ## Safe rollout
 
-1. Merge the workflow changes into `Dev` and confirm `Dev required` appears
-   and succeeds.
-2. Confirm the workflow creates the `Dev → NonProd` pull request and enables
+1. Open or update a pull request into `Dev`. Confirm `Dev required` succeeds
+   and the workflow enables auto-merge for the pull request.
+2. Confirm GitHub merges into `Dev`, then creates the `Dev → NonProd` pull
+   request and enables
    auto-merge. Confirm `NonProd required` appears and succeeds.
 3. Confirm GitHub merges that pull request into `NonProd`, then creates the
    `NonProd → Prod` pull request. Confirm `Prod required` appears and succeeds.

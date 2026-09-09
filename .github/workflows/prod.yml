@@ -1,0 +1,32 @@
+name: Prod
+
+on:
+  pull_request:
+    branches: [Prod]
+  push:
+    branches: [Prod]
+  workflow_dispatch:
+
+concurrency:
+  group: prod-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    name: CI
+    uses: ./.github/workflows/_reusable-ci.yml
+
+  required:
+    name: Prod required
+    if: ${{ always() }}
+    needs: [ci]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify required jobs
+        env:
+          CI_RESULT: ${{ needs.ci.result }}
+        run: test "$CI_RESULT" = "success"

@@ -146,6 +146,8 @@ Dev → NonProd → Prod
 ```
 
 GitHub Actions handles promotion between environments.
+See [CI and automatic promotion setup](docs/ci-promotion.md) for the required
+GitHub repository settings and rollout sequence.
 
 ## Roadmap
 

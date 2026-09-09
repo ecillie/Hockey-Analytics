@@ -96,6 +96,7 @@ After both deployments succeed:
 
 Git-based deployments handle builds automatically. The repository CI workflows
 still run unit tests, lint, and the frontend production build before promotion.
-Configure the Backend CI and Frontend CI jobs as required branch checks on
-`NonProd` and `Prod`; the promotion workflow no longer uses an administrator
-bypass when merging environment branches.
+The `Dev`, `NonProd`, and `Prod` workflows each publish an environment-specific
+`required` check. Configure those checks as branch requirements and enable the
+automatic promotion cascade by following
+[CI and automatic promotion setup](./ci-promotion.md).

@@ -2,18 +2,23 @@
 
 TradeValue uses three environment workflows:
 
-- `Dev` validates pull requests into and pushes to `Dev`. After a successful
-  push, it opens or updates the `Dev → NonProd` promotion pull request.
-- `NonProd` validates pull requests into and pushes to `NonProd`. After a
-  successful push, it opens or updates the `NonProd → Prod` promotion pull
+- `Dev` validates and auto-merges pull requests into `Dev`. After the resulting
+  successful push, it opens or updates the `Dev → NonProd` promotion pull
   request.
-- `Prod` validates pull requests into and pushes to `Prod`. It does not promote
-  further.
+- `NonProd` validates and auto-merges pull requests into `NonProd`. After the
+  resulting successful push, it opens or updates the `NonProd → Prod`
+  promotion pull request.
+- `Prod` validates and auto-merges pull requests into `Prod`. It does not
+  promote further.
 
 All three call `_reusable-ci.yml`, so backend tests, ML tests, frontend lint,
 frontend tests, and the frontend production build use the same implementation.
-Promotion is disabled unless the repository variable
-`ENABLE_AUTO_PROMOTION` is exactly `true`.
+Each destination workflow owns the merge into its branch. Its merge job runs
+only after that environment's required aggregate job succeeds. GitHub
+auto-merge remains responsible for waiting on every other check required by the
+destination branch, including Vercel preview checks when those are configured
+as required. The Dev and NonProd push jobs only create the next promotion pull
+request; they do not merge it themselves.
 
 ## Repository settings
 
@@ -27,7 +32,7 @@ Open **Settings → General → Pull Requests**:
 Auto-merge waits until all requirements on the destination branch have passed.
 See [GitHub's auto-merge documentation](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-auto-merge-for-pull-requests-in-your-repository).
 
-### Actions secret and variable
+### Actions secret
 
 Open **Settings → Secrets and variables → Actions**:
 
@@ -36,9 +41,6 @@ Open **Settings → Secrets and variables → Actions**:
    **Pull requests: Read and write** permissions. Also grant **Workflows: Read
    and write** if automated promotions must merge pull requests that modify
    files under `.github/workflows/`.
-2. Create the repository variable `ENABLE_AUTO_PROMOTION` with the value
-   `false`. Change it to `true` only after all rulesets below are active and a
-   controlled promotion has succeeded.
 
 The workflows use `PROMOTION_TOKEN` rather than `GITHUB_TOKEN` so pull requests
 and merges created by the promotion job trigger the next GitHub Actions
@@ -85,18 +87,14 @@ and [required-status-check documentation](https://docs.github.com/en/repositorie
 
 ## Safe rollout
 
-1. Keep `ENABLE_AUTO_PROMOTION=false`.
-2. Merge the workflow changes into `Dev` and confirm `Dev required` appears
-   and succeeds.
-3. Create a `Dev → NonProd` pull request manually. Confirm `NonProd required`
-   appears and succeeds, then merge it.
-4. Create a `NonProd → Prod` pull request manually. Confirm `Prod required`
-   appears and succeeds, then merge it.
-5. Add the three required checks to their matching rulesets if they were not
-   selectable before their first runs.
-6. Set `ENABLE_AUTO_PROMOTION=true`.
-7. Push one controlled documentation-only change through `Dev` and confirm it
-   advances automatically to `NonProd` and then `Prod`.
+1. Open or update a pull request into `Dev`. Confirm `Dev required` succeeds
+   and the workflow enables auto-merge for the pull request.
+2. Confirm GitHub merges into `Dev`, then creates the `Dev → NonProd` pull
+   request and enables
+   auto-merge. Confirm `NonProd required` appears and succeeds.
+3. Confirm GitHub merges that pull request into `NonProd`, then creates the
+   `NonProd → Prod` pull request. Confirm `Prod required` appears and succeeds.
+4. Confirm GitHub merges the final pull request into `Prod`.
 
 If a required job fails or is cancelled, the destination pull request remains
 open. Rerun the failed jobs or push a corrective commit; auto-merge resumes only

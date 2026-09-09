@@ -143,7 +143,7 @@ regenerate the Python locks after changing a direct dependency, install
 [`uv`](https://docs.astral.sh/uv/) and run:
 
 ```bash
-uv pip compile backend/requirements.txt --python-version 3.12 --universal --no-annotate --output-file backend/constraints.txt
+uv pip compile backend/requirements.in --python-version 3.12 --universal --no-annotate --output-file backend/requirements.txt
 uv pip compile backend/requirements-dev.txt --python-version 3.12 --universal --no-annotate --output-file constraints.txt
 ```
 
@@ -170,12 +170,37 @@ GitHub repository settings and rollout sequence.
 
 ## Roadmap
 
-* Improve roster-status tracking
-* Build salary-cap calculations
-* Expand automated testing
-* Add more NHL data
-* Build player and team analytics
-* Develop player-value models
+### Completed foundation
+
+* PostgreSQL schema and idempotent ingestion pipeline
+* FastAPI implementation of the frontend API contract
+* React application with a mock/live API switch
+* Player-value training and evaluation pipeline
+* Reproducible Python 3.12 and Node.js 24 environments
+* CI promotion workflow, coverage gates, and Vercel/Neon deployment configuration
+
+### Next milestone: live NonProd vertical slice
+
+1. Provision the NonProd Neon database, apply the schema, and load a validated dataset.
+2. Deploy the backend and verify health, seasons, players, teams, contracts, cap, search,
+   overview, and comparison endpoints against real data.
+3. Deploy the frontend with `VITE_USE_MOCK_API=false`, validate CORS and deep links, and
+   complete an end-to-end smoke test.
+4. Add live API contract tests for response shapes, null handling, traded-player totals,
+   pagination, sorting, and error envelopes.
+
+### Following milestones
+
+1. **Salary-cap accuracy:** implement buried-contract relief, accrued cap space, and LTIR
+   pool rules; add scenario-based cap tests.
+2. **Data reliability:** improve NHL/AHL roster reconciliation, ingestion observability,
+   freshness checks, and failure recovery.
+3. **Model integration:** version and publish trained player-value outputs, expose model
+   freshness/quality metadata, and validate projections before presenting them as current.
+4. **Product depth:** replace remaining development-only messaging, expand player and team
+   analytics, and improve comparison workflows.
+5. **Quality:** raise backend service/ML and frontend HTTP/search/page coverage above the
+   current regression floors as each milestone lands.
 
 ## Disclaimer
 

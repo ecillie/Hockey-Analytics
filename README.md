@@ -134,8 +134,27 @@ python -m app.ScriptingFiles.FullDataScript.populate_roster_status
 Run tests with:
 
 ```bash
-pytest
+PYTHONPATH=backend pytest
 ```
+
+The repository targets Python 3.12 and Node.js 24. Python installs use the
+checked-in constraints files, and `npm ci` uses the frontend lockfile. To
+regenerate the Python locks after changing a direct dependency, install
+[`uv`](https://docs.astral.sh/uv/) and run:
+
+```bash
+uv pip compile backend/requirements.txt --python-version 3.12 --universal --no-annotate --output-file backend/constraints.txt
+uv pip compile backend/requirements-dev.txt --python-version 3.12 --universal --no-annotate --output-file constraints.txt
+```
+
+Python tests enforce branch coverage and write HTML/XML/LCOV reports under
+`coverage/python/`. Frontend coverage is enforced with
+`cd frontend && npm run test:coverage`, which writes HTML, Cobertura XML, and
+LCOV reports under `frontend/coverage/`. CI uploads both report directories.
+The initial Python 3.12 baseline is 46.94% branch-aware aggregate coverage
+(48.95% lines and 33.33% branches). The frontend baseline is 74.04% statements,
+61.95% branches, 65.55% functions, and 77.35% lines. These exact floors prevent
+coverage regressions and should be raised as each subsystem gains tests.
 
 ## Branch Workflow
 

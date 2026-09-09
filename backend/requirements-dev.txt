@@ -1,7 +1,10 @@
 -r requirements.txt
+-r ../ml/requirements.txt
+-c ../constraints.txt
 
 # Data ingestion and local verification are not part of the Vercel function.
-pandas>=2.1,<3.0
-requests>=2.31,<3.0
-httpx>=0.27,<1.0
-pytest>=8.0,<9.0
+pandas==2.3.3
+requests==2.31.0
+httpx==0.28.1
+pytest==8.4.2
+pytest-cov==7.0.0

@@ -33,7 +33,7 @@ jobs:
 
   promote:
     name: Promote NonProd to Prod
-    if: ${{ github.event_name == 'push' && vars.ENABLE_AUTO_PROMOTION == 'true' }}
+    if: ${{ github.event_name == 'push' && needs.required.result == 'success' }}
     needs: [required]
     runs-on: ubuntu-latest
     timeout-minutes: 5

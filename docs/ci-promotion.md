@@ -12,8 +12,8 @@ TradeValue uses three environment workflows:
 
 All three call `_reusable-ci.yml`, so backend tests, ML tests, frontend lint,
 frontend tests, and the frontend production build use the same implementation.
-Promotion is disabled unless the repository variable
-`ENABLE_AUTO_PROMOTION` is exactly `true`.
+The `Dev` and `NonProd` promotion jobs run only after their environment's
+required aggregate job succeeds on a branch push.
 
 ## Repository settings
 
@@ -27,7 +27,7 @@ Open **Settings → General → Pull Requests**:
 Auto-merge waits until all requirements on the destination branch have passed.
 See [GitHub's auto-merge documentation](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-auto-merge-for-pull-requests-in-your-repository).
 
-### Actions secret and variable
+### Actions secret
 
 Open **Settings → Secrets and variables → Actions**:
 
@@ -36,9 +36,6 @@ Open **Settings → Secrets and variables → Actions**:
    **Pull requests: Read and write** permissions. Also grant **Workflows: Read
    and write** if automated promotions must merge pull requests that modify
    files under `.github/workflows/`.
-2. Create the repository variable `ENABLE_AUTO_PROMOTION` with the value
-   `false`. Change it to `true` only after all rulesets below are active and a
-   controlled promotion has succeeded.
 
 The workflows use `PROMOTION_TOKEN` rather than `GITHUB_TOKEN` so pull requests
 and merges created by the promotion job trigger the next GitHub Actions
@@ -85,18 +82,13 @@ and [required-status-check documentation](https://docs.github.com/en/repositorie
 
 ## Safe rollout
 
-1. Keep `ENABLE_AUTO_PROMOTION=false`.
-2. Merge the workflow changes into `Dev` and confirm `Dev required` appears
+1. Merge the workflow changes into `Dev` and confirm `Dev required` appears
    and succeeds.
-3. Create a `Dev → NonProd` pull request manually. Confirm `NonProd required`
-   appears and succeeds, then merge it.
-4. Create a `NonProd → Prod` pull request manually. Confirm `Prod required`
-   appears and succeeds, then merge it.
-5. Add the three required checks to their matching rulesets if they were not
-   selectable before their first runs.
-6. Set `ENABLE_AUTO_PROMOTION=true`.
-7. Push one controlled documentation-only change through `Dev` and confirm it
-   advances automatically to `NonProd` and then `Prod`.
+2. Confirm the workflow creates the `Dev → NonProd` pull request and enables
+   auto-merge. Confirm `NonProd required` appears and succeeds.
+3. Confirm GitHub merges that pull request into `NonProd`, then creates the
+   `NonProd → Prod` pull request. Confirm `Prod required` appears and succeeds.
+4. Confirm GitHub merges the final pull request into `Prod`.
 
 If a required job fails or is cancelled, the destination pull request remains
 open. Rerun the failed jobs or push a corrective commit; auto-merge resumes only

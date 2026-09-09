@@ -30,3 +30,19 @@ jobs:
         env:
           CI_RESULT: ${{ needs.ci.result }}
         run: test "$CI_RESULT" = "success"
+
+  merge-to-prod:
+    name: Enable automatic merge to Prod
+    if: ${{ github.event_name == 'pull_request' && needs.required.result == 'success' }}
+    needs: [required]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Enable auto-merge for the validated pull request
+        env:
+          GH_TOKEN: ${{ secrets.PROMOTION_TOKEN }}
+        run: |
+          gh pr merge "${{ github.event.pull_request.number }}" \
+            --repo "${{ github.repository }}" \
+            --auto \
+            --merge

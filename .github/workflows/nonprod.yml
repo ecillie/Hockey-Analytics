@@ -1,0 +1,69 @@
+name: NonProd
+
+on:
+  pull_request:
+    branches: [NonProd]
+  push:
+    branches: [NonProd]
+  workflow_dispatch:
+
+concurrency:
+  group: nonprod-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    name: CI
+    uses: ./.github/workflows/_reusable-ci.yml
+
+  required:
+    name: NonProd required
+    if: ${{ always() }}
+    needs: [ci]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify required jobs
+        env:
+          CI_RESULT: ${{ needs.ci.result }}
+        run: test "$CI_RESULT" = "success"
+
+  promote:
+    name: Promote NonProd to Prod
+    if: ${{ github.event_name == 'push' && vars.ENABLE_AUTO_PROMOTION == 'true' }}
+    needs: [required]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: environment-promotion
+      cancel-in-progress: false
+    steps:
+      - name: Create or update promotion pull request
+        env:
+          GH_TOKEN: ${{ secrets.PROMOTION_TOKEN }}
+        run: |
+          PR_NUMBER=$(gh pr list \
+            --repo "${{ github.repository }}" \
+            --base "Prod" \
+            --head "NonProd" \
+            --state open \
+            --json number \
+            --jq '.[0].number')
+
+          if [ -z "$PR_NUMBER" ]; then
+            PR_URL=$(gh pr create \
+              --repo "${{ github.repository }}" \
+              --base "Prod" \
+              --head "NonProd" \
+              --title "Promote NonProd to Prod" \
+              --body "Automated promotion from \`NonProd\` to \`Prod\`. This PR merges after all Prod requirements pass.")
+            PR_NUMBER=${PR_URL##*/}
+          fi
+
+          gh pr merge "$PR_NUMBER" \
+            --repo "${{ github.repository }}" \
+            --auto \
+            --merge

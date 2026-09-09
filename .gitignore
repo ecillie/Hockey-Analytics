@@ -22,3 +22,4 @@ frontend/*.tsbuildinfo
 **/.vercel/
 **/.env.local
 **/.env.*.local
+/release intiavitive.md

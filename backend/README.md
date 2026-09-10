@@ -54,9 +54,21 @@ origins. Do not use `*` when credentials are introduced later.
 PYTHONPATH=backend pytest -q backend/tests ml/tests
 ```
 
-HTTP tests replace the database service and verify response contracts,
-validation errors, route coverage, and CORS. A live smoke test still requires a
-populated PostgreSQL database.
+HTTP and service tests verify response contracts, validation errors, route
+coverage, CORS, and service-layer branching. PostgreSQL integration tests run
+when `TEST_DATABASE_URL` is set; the target database must already contain the
+schema and must be disposable because the tests truncate application tables.
+CI provisions a dedicated PostgreSQL service, applies `database/schema.sql`,
+and runs the integration suite automatically.
+
+To run the integration tests against a dedicated local test database:
+
+```bash
+createdb tradevalue_test
+psql postgresql://localhost/tradevalue_test -f backend/database/schema.sql
+TEST_DATABASE_URL=postgresql://localhost/tradevalue_test \
+  PYTHONPATH=backend pytest -q backend/tests/test_postgres_integration.py
+```
 
 ## Container
 

@@ -1,7 +1,7 @@
-"""Database connections for ingestion scripts.
+"""Database connections for the API and ingestion scripts.
 
-The schema is applied manually from backend/database/schema.sql. This module
-does not call metadata.create_all() or otherwise mutate the schema.
+Alembic owns schema changes. This module does not call metadata.create_all() or
+otherwise mutate the schema.
 """
 
 from __future__ import annotations
@@ -30,14 +30,14 @@ Base = declarative_base()
 
 
 def init_db() -> None:
-    """Verify that the manually applied schema is reachable and present."""
+    """Verify that the migrated schema is reachable and present."""
     with engine.connect() as connection:
         players_table = connection.execute(
             text("SELECT to_regclass('public.players')")
         ).scalar_one()
     if players_table is None:
         raise RuntimeError(
-            "Database schema is missing; apply backend/database/schema.sql first"
+            "Database schema is missing; run Alembic upgrade head first"
         )
 
 

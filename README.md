@@ -87,10 +87,11 @@ For production, follow the complete
 
 ## Database
 
-The PostgreSQL schema is located at:
+The frozen initial PostgreSQL schema and versioned migrations are located at:
 
 ```text
 backend/database/schema.sql
+backend/migrations/versions/
 ```
 
 Install the development dependencies, copy the environment template, and enter your local
@@ -101,12 +102,14 @@ python -m pip install -r backend/requirements-dev.txt
 cp backend/.env.example backend/.env
 ```
 
-Apply `backend/database/schema.sql` manually before running a loader. The
+Run `python -m alembic -c backend/alembic.ini upgrade head` before a loader. The
 application uses `ENV=dev`, `ENV=nonprod`, or `ENV=prod` to select its database
 configuration. Development can use the individual `DB_*` values. Nonprod and
 prod use `DATABASE_URL` or their scoped `NONPROD_DATABASE_URL` /
 `PROD_DATABASE_URL` value supplied by the deployment environment. The
-application does not create the schema automatically.
+application does not create or migrate the schema automatically. See
+`backend/database/README.md` for migration creation, catalog snapshots, existing
+database adoption, and the production release gate.
 
 ## Running the Data Collection
 
@@ -144,6 +147,7 @@ regenerate the Python locks after changing a direct dependency, install
 
 ```bash
 uv pip compile backend/requirements.in --python-version 3.12 --universal --no-annotate --output-file backend/requirements.txt
+uv pip compile backend/requirements.txt --python-version 3.12 --universal --no-annotate --output-file backend/constraints.txt
 uv pip compile backend/requirements-dev.txt --python-version 3.12 --universal --no-annotate --output-file constraints.txt
 ```
 

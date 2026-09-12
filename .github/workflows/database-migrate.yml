@@ -1,0 +1,76 @@
+name: Database migration
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: GitHub Environment containing the direct Neon DATABASE_URL
+        required: true
+        type: choice
+        options:
+          - nonprod
+          - prod
+
+permissions:
+  contents: read
+
+concurrency:
+  group: database-migration-${{ inputs.environment }}
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    name: Migrate ${{ inputs.environment }} database
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: ${{ inputs.environment }}
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      ENV: ${{ inputs.environment }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify environment branch and direct connection
+        env:
+          EXPECTED_BRANCH: ${{ inputs.environment == 'prod' && 'Prod' || 'NonProd' }}
+        run: |
+          test "$GITHUB_REF_NAME" = "$EXPECTED_BRANCH" || {
+            echo "Select the $EXPECTED_BRANCH branch when migrating ${{ inputs.environment }}."
+            exit 1
+          }
+          case "$DATABASE_URL" in
+            *-pooler*)
+              echo "DATABASE_URL must be a direct, non-pooled migration connection."
+              exit 1
+              ;;
+          esac
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version
+          cache: pip
+          cache-dependency-path: |
+            constraints.txt
+            backend/constraints.txt
+            backend/requirements.txt
+      - name: Install migration dependencies
+        run: python -m pip install -r backend/requirements.txt
+      - name: Validate linear migration history
+        run: python backend/database/verify_migrations.py
+      - name: Check database migration preconditions
+        run: python backend/database/migration_preflight.py
+      - name: Record current revision
+        run: python -m alembic -c backend/alembic.ini current
+      - name: Apply migrations
+        run: python -m alembic -c backend/alembic.ini upgrade head
+      - name: Verify migrated schema
+        run: python backend/database/schema_snapshot.py
+      - name: Smoke-test migrated API
+        run: PYTHONPATH=backend python backend/database/migration_smoke.py
+      - name: Write migration summary
+        if: ${{ always() }}
+        run: |
+          {
+            echo "## Database migration"
+            echo "- Environment: ${{ inputs.environment }}"
+            echo "- Commit: ${{ github.sha }}"
+            echo "- Revision after run: $(python -m alembic -c backend/alembic.ini current 2>&1)"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -51,10 +51,10 @@ def calculate_replacement_level(
     No contract information is used.
     """
 
-    if df is None:
-        df = build_features()
-
-    result = df.copy()
+    # Normalize both raw player-season rows and already-built features at
+    # this boundary.  This keeps the public function safe for tests and
+    # downstream callers that do not know the feature-building internals.
+    result = build_features(df)
 
     # ---------------------------------------------------------
     # TOI per game

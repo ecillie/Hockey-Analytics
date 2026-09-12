@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 
+import joblib
 import numpy as np
 import pytest
 
@@ -64,6 +65,24 @@ def test_training_is_deterministic_and_predictions_are_safe(monkeypatch, player_
     assert (frame["prediction"] >= 0).all()
 
 
+def test_model_seed_is_explicit_and_serialization_round_trips(monkeypatch, player_seasons, tmp_path):
+    _patch_training_data(monkeypatch, player_seasons)
+    data = build_training_data()
+    split = temporal_splits(data)
+    columns = NUMERIC_FEATURES + CATEGORICAL_FEATURES
+    model = build_model()
+    model.fit(split["train"][columns], split["train"]["next_season_hockey_value"])
+
+    assert model.named_steps["model"].random_state == 42
+    before = model.predict(split["test"][columns])
+
+    path = tmp_path / "model.joblib"
+    joblib.dump(model, path)
+    after = joblib.load(path).predict(split["test"][columns])
+
+    assert np.array_equal(before, after)
+
+
 def test_prediction_invariants_reject_bad_values(player_seasons):
     with pytest.raises(ValueError):
         prediction_frame(player_seasons.head(1).assign(target_season=2022), np.array([np.nan]))
@@ -86,6 +105,20 @@ def test_metrics_and_regression_thresholds():
         check_metric_regression({"mae": 2.0, "rmse": 1.0, "r2": 0.0}, {"mae": 1.0, "rmse": 1.0, "r2": 0.0}, {"mae": .1, "rmse": .1, "r2": .1})
 
 
+def test_metric_regression_uses_worse_direction_for_r2():
+    check_metric_regression(
+        {"mae": 1.0, "rmse": 1.0, "r2": 0.5},
+        {"mae": 1.0, "rmse": 1.0, "r2": 0.5},
+        {"mae": 0.0, "rmse": 0.0, "r2": 0.0},
+    )
+    with pytest.raises(AssertionError, match="r2"):
+        check_metric_regression(
+            {"mae": 1.0, "rmse": 1.0, "r2": 0.49},
+            {"mae": 1.0, "rmse": 1.0, "r2": 0.5},
+            {"mae": 0.0, "rmse": 0.0, "r2": 0.01},
+        )
+
+
 def test_metadata_is_stable_and_valid():
     from pathlib import Path
     path = Path(__file__).parents[1] / "models" / "skater_value_model_metadata.json"
@@ -100,6 +133,21 @@ def test_metadata_validation_rejects_leakage_and_bad_split_order():
         validate_metadata({**valid, "contract_features_used": True})
     with pytest.raises(ValueError, match="Validation"):
         validate_metadata({**valid, "validation_target_season": 2025, "test_target_season": 2024})
+
+
+def test_metadata_validation_rejects_incomplete_or_nonfinite_metrics():
+    path = __import__("pathlib").Path(__file__).parents[1] / "models" / "skater_value_model_metadata.json"
+    valid = json.loads(path.read_text(encoding="utf-8"))
+
+    incomplete = json.loads(json.dumps(valid))
+    del incomplete["metrics"]["test"]["rmse"]
+    with pytest.raises(ValueError, match="Incomplete metrics"):
+        validate_metadata(incomplete)
+
+    nonfinite = json.loads(json.dumps(valid))
+    nonfinite["metrics"]["validation"]["r2"] = float("nan")
+    with pytest.raises(ValueError, match="Non-finite"):
+        validate_metadata(nonfinite)
 
 
 def test_temporal_split_requires_three_seasons():

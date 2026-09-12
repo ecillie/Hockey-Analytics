@@ -12,10 +12,14 @@ from ml.training.train_skater_value import CATEGORICAL_FEATURES, NUMERIC_FEATURE
 
 PREDICTION_COLUMNS = ["player_id", "season", "prediction"]
 METRIC_TOLERANCE = {"mae": 0.25, "rmse": 0.35, "r2": 0.05}
+METRICS = ("mae", "rmse", "r2")
+SPLITS = ("train", "validation", "test")
 
 
 def temporal_splits(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
     """Split observations by target season, never by a random row split."""
+    if "target_season" not in df.columns:
+        raise ValueError("target_season is required for temporal splits")
     seasons = sorted(df["target_season"].dropna().unique())
     if len(seasons) < 3:
         raise ValueError("At least three target seasons are required")
@@ -52,12 +56,22 @@ def validate_metadata(metadata: dict) -> None:
         raise ValueError("Metadata categorical feature list is out of sync")
     if not metadata["validation_target_season"] < metadata["test_target_season"]:
         raise ValueError("Validation must precede test")
+    if set(metadata["metrics"]) != set(SPLITS):
+        raise ValueError("Metadata must contain train, validation, and test metrics")
+    for split in SPLITS:
+        values = metadata["metrics"][split]
+        if set(values) != {"rows", *METRICS}:
+            raise ValueError(f"Incomplete metrics for {split} split")
+        if not isinstance(values["rows"], int) or values["rows"] <= 0:
+            raise ValueError(f"Invalid row count for {split} split")
+        if not all(np.isfinite(float(values[metric])) for metric in METRICS):
+            raise ValueError(f"Non-finite metrics for {split} split")
 
 
 def check_metric_regression(current: dict[str, float], baseline: dict[str, float], tolerance: dict[str, float] | None = None) -> None:
     """Fail when current metrics move beyond the agreed absolute tolerance."""
     tolerance = tolerance or METRIC_TOLERANCE
-    for metric in ("mae", "rmse", "r2"):
+    for metric in METRICS:
         if metric not in current or metric not in baseline:
             raise ValueError(f"Missing metric: {metric}")
         regression = current[metric] - baseline[metric] if metric != "r2" else baseline[metric] - current[metric]
@@ -87,9 +101,12 @@ def main() -> None:
         "validation": {"mae": 8.2497447023, "rmse": 11.3177165668, "r2": 0.6429673612},
         "test": {"mae": 9.3361370822, "rmse": 13.2279709137, "r2": 0.5664511622},
     }
-    for split, values in metadata["metrics"].items():
-        if values["mae"] > limits[split]["mae"] or values["rmse"] > limits[split]["rmse"] or values["r2"] < limits[split]["r2"]:
-            raise SystemExit(f"ML metric regression detected in {split} split")
+    for split in SPLITS:
+        check_metric_regression(
+            metadata["metrics"][split],
+            limits[split],
+            {"mae": 0.0, "rmse": 0.0, "r2": 0.0},
+        )
     print("ML correctness and metric gate passed")
 
 

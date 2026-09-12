@@ -19,8 +19,16 @@ Keep two connection strings:
 Initialize an empty database from a trusted local environment:
 
 ```bash
-psql "$NEON_DIRECT_DATABASE_URL" -f backend/database/schema.sql
+python -m pip install -r backend/requirements.txt
+DATABASE_URL="$NEON_DIRECT_DATABASE_URL" \
+  python -m alembic -c backend/alembic.ini upgrade head
+DATABASE_URL="$NEON_DIRECT_DATABASE_URL" \
+  python backend/database/schema_snapshot.py
 ```
+
+For databases previously created from `schema.sql`, follow the verified
+one-time stamping procedure in `backend/database/README.md`; do not run the
+initial migration over existing tables.
 
 Then load the source data if the database has not already been populated:
 
@@ -85,6 +93,15 @@ a new frontend deployment. `DATABASE_URL` must never be configured on the
 frontend project.
 
 ## 4. Validate the release
+
+Before deploying schema-dependent code, run the GitHub Actions
+`Database migration` workflow for `nonprod`. The selected GitHub Environment
+must contain a direct, non-pooled `DATABASE_URL`. After validation, run it for
+`prod`; configure required reviewers on the GitHub `prod` Environment so this is
+a gated operation. The workflow serializes migrations per environment, applies
+the current Alembic head with lock and statement timeouts, verifies the catalog,
+and runs database-backed API smoke checks. It never runs from application
+startup.
 
 After both deployments succeed:
 

@@ -1,0 +1,4035 @@
+{
+  "columns": [
+    {
+      "column_default": null,
+      "column_name": "id",
+      "data_type": "bigint",
+      "identity_generation": "BY DEFAULT",
+      "is_identity": "YES",
+      "is_nullable": "NO",
+      "ordinal_position": 1,
+      "table_name": "contract_seasons",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "contract_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 2,
+      "table_name": "contract_seasons",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "season_start_year",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 3,
+      "table_name": "contract_seasons",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "owning_team_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 4,
+      "table_name": "contract_seasons",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "base_salary_cents",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 5,
+      "table_name": "contract_seasons",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "signing_bonus_cents",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 6,
+      "table_name": "contract_seasons",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "performance_bonus_cents",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 7,
+      "table_name": "contract_seasons",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "total_cash_cents",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 8,
+      "table_name": "contract_seasons",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "cap_hit_cents",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 9,
+      "table_name": "contract_seasons",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "cap_percentage",
+      "data_type": "numeric",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 10,
+      "table_name": "contract_seasons",
+      "udt_name": "numeric"
+    },
+    {
+      "column_default": "false",
+      "column_name": "is_slide",
+      "data_type": "boolean",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 11,
+      "table_name": "contract_seasons",
+      "udt_name": "bool"
+    },
+    {
+      "column_default": "'{}'::jsonb",
+      "column_name": "clauses",
+      "data_type": "jsonb",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 12,
+      "table_name": "contract_seasons",
+      "udt_name": "jsonb"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "created_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 13,
+      "table_name": "contract_seasons",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "updated_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 14,
+      "table_name": "contract_seasons",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": null,
+      "column_name": "id",
+      "data_type": "bigint",
+      "identity_generation": "BY DEFAULT",
+      "is_identity": "YES",
+      "is_nullable": "NO",
+      "ordinal_position": 1,
+      "table_name": "contracts",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "player_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 2,
+      "table_name": "contracts",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "signing_team_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 3,
+      "table_name": "contracts",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "source_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 4,
+      "table_name": "contracts",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "external_id",
+      "data_type": "text",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 5,
+      "table_name": "contracts",
+      "udt_name": "text"
+    },
+    {
+      "column_default": null,
+      "column_name": "signed_on",
+      "data_type": "date",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 6,
+      "table_name": "contracts",
+      "udt_name": "date"
+    },
+    {
+      "column_default": null,
+      "column_name": "start_season",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 7,
+      "table_name": "contracts",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "end_season",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 8,
+      "table_name": "contracts",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "term_years",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 9,
+      "table_name": "contracts",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "contract_type",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 10,
+      "table_name": "contracts",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "expiry_status",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 11,
+      "table_name": "contracts",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "total_value_cents",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 12,
+      "table_name": "contracts",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "average_value_cents",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 13,
+      "table_name": "contracts",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": "false",
+      "column_name": "is_entry_level",
+      "data_type": "boolean",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 14,
+      "table_name": "contracts",
+      "udt_name": "bool"
+    },
+    {
+      "column_default": "'{}'::jsonb",
+      "column_name": "source_payload",
+      "data_type": "jsonb",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 15,
+      "table_name": "contracts",
+      "udt_name": "jsonb"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "created_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 16,
+      "table_name": "contracts",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "updated_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 17,
+      "table_name": "contracts",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": null,
+      "column_name": "id",
+      "data_type": "bigint",
+      "identity_generation": "BY DEFAULT",
+      "is_identity": "YES",
+      "is_nullable": "NO",
+      "ordinal_position": 1,
+      "table_name": "data_sources",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "code",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 2,
+      "table_name": "data_sources",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "display_name",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 3,
+      "table_name": "data_sources",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "base_url",
+      "data_type": "text",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 4,
+      "table_name": "data_sources",
+      "udt_name": "text"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "created_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 5,
+      "table_name": "data_sources",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": null,
+      "column_name": "id",
+      "data_type": "bigint",
+      "identity_generation": "BY DEFAULT",
+      "is_identity": "YES",
+      "is_nullable": "NO",
+      "ordinal_position": 1,
+      "table_name": "games",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "nhl_game_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 2,
+      "table_name": "games",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "season_start_year",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 3,
+      "table_name": "games",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "game_type",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 4,
+      "table_name": "games",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "game_date",
+      "data_type": "date",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 5,
+      "table_name": "games",
+      "udt_name": "date"
+    },
+    {
+      "column_default": null,
+      "column_name": "start_time_utc",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 6,
+      "table_name": "games",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": null,
+      "column_name": "away_team_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 7,
+      "table_name": "games",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "home_team_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 8,
+      "table_name": "games",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "venue",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 9,
+      "table_name": "games",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "game_state",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 10,
+      "table_name": "games",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "away_score",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 11,
+      "table_name": "games",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "home_score",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 12,
+      "table_name": "games",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "last_synced_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 13,
+      "table_name": "games",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "created_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 14,
+      "table_name": "games",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "updated_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 15,
+      "table_name": "games",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": null,
+      "column_name": "id",
+      "data_type": "bigint",
+      "identity_generation": "BY DEFAULT",
+      "is_identity": "YES",
+      "is_nullable": "NO",
+      "ordinal_position": 1,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "player_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 2,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "season_start_year",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 3,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "team_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 4,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": "'TEAM'::character varying",
+      "column_name": "stat_scope",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 5,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": "2",
+      "column_name": "game_type",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 6,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "situation",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 7,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "source_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 8,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "ingestion_run_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 9,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "games_played",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 10,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "ice_time_seconds",
+      "data_type": "double precision",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 11,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "float8"
+    },
+    {
+      "column_default": null,
+      "column_name": "expected_goals_against",
+      "data_type": "double precision",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 12,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "float8"
+    },
+    {
+      "column_default": null,
+      "column_name": "goals_against",
+      "data_type": "double precision",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 13,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "float8"
+    },
+    {
+      "column_default": null,
+      "column_name": "unblocked_shot_attempts",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 14,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "blocked_shot_attempts",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 15,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "expected_rebounds",
+      "data_type": "double precision",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 16,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "float8"
+    },
+    {
+      "column_default": null,
+      "column_name": "rebounds",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 17,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "expected_freezes",
+      "data_type": "double precision",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 18,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "float8"
+    },
+    {
+      "column_default": null,
+      "column_name": "freezes",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 19,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "expected_shots_on_goal",
+      "data_type": "double precision",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 20,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "float8"
+    },
+    {
+      "column_default": null,
+      "column_name": "shots_on_goal",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 21,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "flurry_adjusted_expected_goals",
+      "data_type": "double precision",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 22,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "float8"
+    },
+    {
+      "column_default": null,
+      "column_name": "low_danger_shots",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 23,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "medium_danger_shots",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 24,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "high_danger_shots",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 25,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "low_danger_expected_goals",
+      "data_type": "double precision",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 26,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "float8"
+    },
+    {
+      "column_default": null,
+      "column_name": "medium_danger_expected_goals",
+      "data_type": "double precision",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 27,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "float8"
+    },
+    {
+      "column_default": null,
+      "column_name": "high_danger_expected_goals",
+      "data_type": "double precision",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 28,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "float8"
+    },
+    {
+      "column_default": null,
+      "column_name": "low_danger_goals",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 29,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "medium_danger_goals",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 30,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "high_danger_goals",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 31,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": "'{}'::jsonb",
+      "column_name": "extra_metrics",
+      "data_type": "jsonb",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 32,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "jsonb"
+    },
+    {
+      "column_default": null,
+      "column_name": "source_row_hash",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 33,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "created_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 34,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "updated_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 35,
+      "table_name": "goalie_advanced_season_stats",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": null,
+      "column_name": "id",
+      "data_type": "bigint",
+      "identity_generation": "BY DEFAULT",
+      "is_identity": "YES",
+      "is_nullable": "NO",
+      "ordinal_position": 1,
+      "table_name": "goalie_season_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "player_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 2,
+      "table_name": "goalie_season_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "season_start_year",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 3,
+      "table_name": "goalie_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "team_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 4,
+      "table_name": "goalie_season_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": "'TEAM'::character varying",
+      "column_name": "stat_scope",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 5,
+      "table_name": "goalie_season_stats",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "game_type",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 6,
+      "table_name": "goalie_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "source_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 7,
+      "table_name": "goalie_season_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "ingestion_run_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 8,
+      "table_name": "goalie_season_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "games_played",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 9,
+      "table_name": "goalie_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "wins",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 10,
+      "table_name": "goalie_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "losses",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 11,
+      "table_name": "goalie_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "overtime_losses",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 12,
+      "table_name": "goalie_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "shots_against",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 13,
+      "table_name": "goalie_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "saves",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 14,
+      "table_name": "goalie_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "save_percentage",
+      "data_type": "double precision",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 15,
+      "table_name": "goalie_season_stats",
+      "udt_name": "float8"
+    },
+    {
+      "column_default": null,
+      "column_name": "goals_against",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 16,
+      "table_name": "goalie_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "goals_against_average",
+      "data_type": "double precision",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 17,
+      "table_name": "goalie_season_stats",
+      "udt_name": "float8"
+    },
+    {
+      "column_default": null,
+      "column_name": "shutouts",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 18,
+      "table_name": "goalie_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "time_on_ice_seconds",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 19,
+      "table_name": "goalie_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "source_row_hash",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 20,
+      "table_name": "goalie_season_stats",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "created_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 21,
+      "table_name": "goalie_season_stats",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "updated_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 22,
+      "table_name": "goalie_season_stats",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": null,
+      "column_name": "id",
+      "data_type": "bigint",
+      "identity_generation": "BY DEFAULT",
+      "is_identity": "YES",
+      "is_nullable": "NO",
+      "ordinal_position": 1,
+      "table_name": "ingestion_runs",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "source_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 2,
+      "table_name": "ingestion_runs",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "job_name",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 3,
+      "table_name": "ingestion_runs",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": "'running'::character varying",
+      "column_name": "status",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 4,
+      "table_name": "ingestion_runs",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "started_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 5,
+      "table_name": "ingestion_runs",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": null,
+      "column_name": "finished_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 6,
+      "table_name": "ingestion_runs",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": "0",
+      "column_name": "records_read",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 7,
+      "table_name": "ingestion_runs",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": "0",
+      "column_name": "records_created",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 8,
+      "table_name": "ingestion_runs",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": "0",
+      "column_name": "records_updated",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 9,
+      "table_name": "ingestion_runs",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": "0",
+      "column_name": "records_skipped",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 10,
+      "table_name": "ingestion_runs",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "error_message",
+      "data_type": "text",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 11,
+      "table_name": "ingestion_runs",
+      "udt_name": "text"
+    },
+    {
+      "column_default": "'{}'::jsonb",
+      "column_name": "metadata",
+      "data_type": "jsonb",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 12,
+      "table_name": "ingestion_runs",
+      "udt_name": "jsonb"
+    },
+    {
+      "column_default": null,
+      "column_name": "id",
+      "data_type": "bigint",
+      "identity_generation": "BY DEFAULT",
+      "is_identity": "YES",
+      "is_nullable": "NO",
+      "ordinal_position": 1,
+      "table_name": "ltir_overrides",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "player_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 2,
+      "table_name": "ltir_overrides",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "start_date",
+      "data_type": "date",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 3,
+      "table_name": "ltir_overrides",
+      "udt_name": "date"
+    },
+    {
+      "column_default": null,
+      "column_name": "end_date",
+      "data_type": "date",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 4,
+      "table_name": "ltir_overrides",
+      "udt_name": "date"
+    },
+    {
+      "column_default": null,
+      "column_name": "notes",
+      "data_type": "text",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 5,
+      "table_name": "ltir_overrides",
+      "udt_name": "text"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "created_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 6,
+      "table_name": "ltir_overrides",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "updated_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 7,
+      "table_name": "ltir_overrides",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": null,
+      "column_name": "id",
+      "data_type": "bigint",
+      "identity_generation": "BY DEFAULT",
+      "is_identity": "YES",
+      "is_nullable": "NO",
+      "ordinal_position": 1,
+      "table_name": "model_versions",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "model_type",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 2,
+      "table_name": "model_versions",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "version",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 3,
+      "table_name": "model_versions",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "artifact_uri",
+      "data_type": "text",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 4,
+      "table_name": "model_versions",
+      "udt_name": "text"
+    },
+    {
+      "column_default": null,
+      "column_name": "feature_schema",
+      "data_type": "jsonb",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 5,
+      "table_name": "model_versions",
+      "udt_name": "jsonb"
+    },
+    {
+      "column_default": null,
+      "column_name": "training_start_season",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 6,
+      "table_name": "model_versions",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "training_end_season",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 7,
+      "table_name": "model_versions",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": "'{}'::jsonb",
+      "column_name": "evaluation_metrics",
+      "data_type": "jsonb",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 8,
+      "table_name": "model_versions",
+      "udt_name": "jsonb"
+    },
+    {
+      "column_default": "false",
+      "column_name": "active",
+      "data_type": "boolean",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 9,
+      "table_name": "model_versions",
+      "udt_name": "bool"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "created_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 10,
+      "table_name": "model_versions",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": null,
+      "column_name": "id",
+      "data_type": "bigint",
+      "identity_generation": "BY DEFAULT",
+      "is_identity": "YES",
+      "is_nullable": "NO",
+      "ordinal_position": 1,
+      "table_name": "player_external_ids",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "player_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 2,
+      "table_name": "player_external_ids",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "source_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 3,
+      "table_name": "player_external_ids",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "external_id",
+      "data_type": "text",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 4,
+      "table_name": "player_external_ids",
+      "udt_name": "text"
+    },
+    {
+      "column_default": null,
+      "column_name": "source_slug",
+      "data_type": "text",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 5,
+      "table_name": "player_external_ids",
+      "udt_name": "text"
+    },
+    {
+      "column_default": null,
+      "column_name": "source_name",
+      "data_type": "text",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 6,
+      "table_name": "player_external_ids",
+      "udt_name": "text"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "created_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 7,
+      "table_name": "player_external_ids",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "updated_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 8,
+      "table_name": "player_external_ids",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": null,
+      "column_name": "id",
+      "data_type": "bigint",
+      "identity_generation": "BY DEFAULT",
+      "is_identity": "YES",
+      "is_nullable": "NO",
+      "ordinal_position": 1,
+      "table_name": "player_game_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "game_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 2,
+      "table_name": "player_game_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "player_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 3,
+      "table_name": "player_game_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "team_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 4,
+      "table_name": "player_game_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "source_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 5,
+      "table_name": "player_game_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "ingestion_run_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 6,
+      "table_name": "player_game_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "position_type",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 7,
+      "table_name": "player_game_stats",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "time_on_ice_seconds",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 8,
+      "table_name": "player_game_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "goals",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 9,
+      "table_name": "player_game_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "assists",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 10,
+      "table_name": "player_game_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "points",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 11,
+      "table_name": "player_game_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "shots",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 12,
+      "table_name": "player_game_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "saves",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 13,
+      "table_name": "player_game_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "goals_against",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 14,
+      "table_name": "player_game_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": "'{}'::jsonb",
+      "column_name": "extra_metrics",
+      "data_type": "jsonb",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 15,
+      "table_name": "player_game_stats",
+      "udt_name": "jsonb"
+    },
+    {
+      "column_default": null,
+      "column_name": "source_row_hash",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 16,
+      "table_name": "player_game_stats",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "created_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 17,
+      "table_name": "player_game_stats",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "updated_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 18,
+      "table_name": "player_game_stats",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": null,
+      "column_name": "id",
+      "data_type": "bigint",
+      "identity_generation": "BY DEFAULT",
+      "is_identity": "YES",
+      "is_nullable": "NO",
+      "ordinal_position": 1,
+      "table_name": "player_team_stints",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "player_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 2,
+      "table_name": "player_team_stints",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "season_start_year",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 3,
+      "table_name": "player_team_stints",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "team_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 4,
+      "table_name": "player_team_stints",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "joined_on",
+      "data_type": "date",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 5,
+      "table_name": "player_team_stints",
+      "udt_name": "date"
+    },
+    {
+      "column_default": null,
+      "column_name": "departed_on",
+      "data_type": "date",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 6,
+      "table_name": "player_team_stints",
+      "udt_name": "date"
+    },
+    {
+      "column_default": null,
+      "column_name": "roster_status",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 7,
+      "table_name": "player_team_stints",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "created_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 8,
+      "table_name": "player_team_stints",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "updated_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 9,
+      "table_name": "player_team_stints",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": null,
+      "column_name": "id",
+      "data_type": "bigint",
+      "identity_generation": "BY DEFAULT",
+      "is_identity": "YES",
+      "is_nullable": "NO",
+      "ordinal_position": 1,
+      "table_name": "players",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "first_name",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 2,
+      "table_name": "players",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "last_name",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 3,
+      "table_name": "players",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "birth_date",
+      "data_type": "date",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 4,
+      "table_name": "players",
+      "udt_name": "date"
+    },
+    {
+      "column_default": null,
+      "column_name": "primary_position",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 5,
+      "table_name": "players",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "shoots_catches",
+      "data_type": "character",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 6,
+      "table_name": "players",
+      "udt_name": "bpchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "nationality",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 7,
+      "table_name": "players",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": "true",
+      "column_name": "active",
+      "data_type": "boolean",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 8,
+      "table_name": "players",
+      "udt_name": "bool"
+    },
+    {
+      "column_default": "'UNKNOWN'::roster_status",
+      "column_name": "roster_status",
+      "data_type": "USER-DEFINED",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 9,
+      "table_name": "players",
+      "udt_name": "roster_status"
+    },
+    {
+      "column_default": null,
+      "column_name": "roster_status_updated_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 10,
+      "table_name": "players",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "created_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 11,
+      "table_name": "players",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "updated_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 12,
+      "table_name": "players",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": null,
+      "column_name": "id",
+      "data_type": "bigint",
+      "identity_generation": "BY DEFAULT",
+      "is_identity": "YES",
+      "is_nullable": "NO",
+      "ordinal_position": 1,
+      "table_name": "predictions",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "model_version_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 2,
+      "table_name": "predictions",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "player_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 3,
+      "table_name": "predictions",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "target_season",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 4,
+      "table_name": "predictions",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "actual_contract_season_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 5,
+      "table_name": "predictions",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "position_group",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 6,
+      "table_name": "predictions",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "predicted_aav_cents",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 7,
+      "table_name": "predictions",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "predicted_cap_percentage",
+      "data_type": "numeric",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 8,
+      "table_name": "predictions",
+      "udt_name": "numeric"
+    },
+    {
+      "column_default": null,
+      "column_name": "input_features",
+      "data_type": "jsonb",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 9,
+      "table_name": "predictions",
+      "udt_name": "jsonb"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "created_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 10,
+      "table_name": "predictions",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": null,
+      "column_name": "start_year",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 1,
+      "table_name": "seasons",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "end_year",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 2,
+      "table_name": "seasons",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "label",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 3,
+      "table_name": "seasons",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "regular_start_date",
+      "data_type": "date",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 4,
+      "table_name": "seasons",
+      "udt_name": "date"
+    },
+    {
+      "column_default": null,
+      "column_name": "regular_end_date",
+      "data_type": "date",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 5,
+      "table_name": "seasons",
+      "udt_name": "date"
+    },
+    {
+      "column_default": null,
+      "column_name": "salary_cap_cents",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 6,
+      "table_name": "seasons",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "created_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 7,
+      "table_name": "seasons",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "updated_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 8,
+      "table_name": "seasons",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": null,
+      "column_name": "id",
+      "data_type": "bigint",
+      "identity_generation": "BY DEFAULT",
+      "is_identity": "YES",
+      "is_nullable": "NO",
+      "ordinal_position": 1,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "player_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 2,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "season_start_year",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 3,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "team_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 4,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": "'TEAM'::character varying",
+      "column_name": "stat_scope",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 5,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": "2",
+      "column_name": "game_type",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 6,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "situation",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 7,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "source_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 8,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "ingestion_run_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 9,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "games_played",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 10,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "ice_time_seconds",
+      "data_type": "double precision",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 11,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "float8"
+    },
+    {
+      "column_default": null,
+      "column_name": "shifts",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 12,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "game_score",
+      "data_type": "double precision",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 13,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "float8"
+    },
+    {
+      "column_default": null,
+      "column_name": "individual_points",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 14,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "individual_goals",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 15,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "individual_primary_assists",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 16,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "individual_secondary_assists",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 17,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "individual_expected_goals",
+      "data_type": "double precision",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 18,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "float8"
+    },
+    {
+      "column_default": null,
+      "column_name": "individual_shots_on_goal",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 19,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "individual_unblocked_attempts",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 20,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "on_ice_expected_goals_pct",
+      "data_type": "double precision",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 21,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "float8"
+    },
+    {
+      "column_default": null,
+      "column_name": "shots_blocked",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 22,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "takeaways",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 23,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "giveaways",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 24,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "penalties",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 25,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "penalties_drawn",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 26,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "offensive_zone_shift_starts",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 27,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "defensive_zone_shift_starts",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 28,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "neutral_zone_shift_starts",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 29,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": "'{}'::jsonb",
+      "column_name": "extra_metrics",
+      "data_type": "jsonb",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 30,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "jsonb"
+    },
+    {
+      "column_default": null,
+      "column_name": "source_row_hash",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 31,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "created_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 32,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "updated_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 33,
+      "table_name": "skater_advanced_season_stats",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": null,
+      "column_name": "id",
+      "data_type": "bigint",
+      "identity_generation": "BY DEFAULT",
+      "is_identity": "YES",
+      "is_nullable": "NO",
+      "ordinal_position": 1,
+      "table_name": "skater_season_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "player_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 2,
+      "table_name": "skater_season_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "season_start_year",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 3,
+      "table_name": "skater_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "team_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 4,
+      "table_name": "skater_season_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": "'TEAM'::character varying",
+      "column_name": "stat_scope",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 5,
+      "table_name": "skater_season_stats",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "game_type",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 6,
+      "table_name": "skater_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "source_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 7,
+      "table_name": "skater_season_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "ingestion_run_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 8,
+      "table_name": "skater_season_stats",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "games_played",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 9,
+      "table_name": "skater_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "goals",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 10,
+      "table_name": "skater_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "assists",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 11,
+      "table_name": "skater_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "points",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 12,
+      "table_name": "skater_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "plus_minus",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 13,
+      "table_name": "skater_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "penalty_minutes",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 14,
+      "table_name": "skater_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "power_play_goals",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 15,
+      "table_name": "skater_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "power_play_points",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 16,
+      "table_name": "skater_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "short_handed_goals",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 17,
+      "table_name": "skater_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "shots",
+      "data_type": "smallint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 18,
+      "table_name": "skater_season_stats",
+      "udt_name": "int2"
+    },
+    {
+      "column_default": null,
+      "column_name": "shooting_percentage",
+      "data_type": "double precision",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 19,
+      "table_name": "skater_season_stats",
+      "udt_name": "float8"
+    },
+    {
+      "column_default": null,
+      "column_name": "source_row_hash",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 20,
+      "table_name": "skater_season_stats",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "created_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 21,
+      "table_name": "skater_season_stats",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "updated_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 22,
+      "table_name": "skater_season_stats",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": null,
+      "column_name": "id",
+      "data_type": "bigint",
+      "identity_generation": "BY DEFAULT",
+      "is_identity": "YES",
+      "is_nullable": "NO",
+      "ordinal_position": 1,
+      "table_name": "source_records",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "ingestion_run_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 2,
+      "table_name": "source_records",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "source_id",
+      "data_type": "bigint",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 3,
+      "table_name": "source_records",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "entity_type",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 4,
+      "table_name": "source_records",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "external_key",
+      "data_type": "text",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 5,
+      "table_name": "source_records",
+      "udt_name": "text"
+    },
+    {
+      "column_default": null,
+      "column_name": "payload_hash",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 6,
+      "table_name": "source_records",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "payload",
+      "data_type": "jsonb",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 7,
+      "table_name": "source_records",
+      "udt_name": "jsonb"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "fetched_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 8,
+      "table_name": "source_records",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": null,
+      "column_name": "id",
+      "data_type": "bigint",
+      "identity_generation": "BY DEFAULT",
+      "is_identity": "YES",
+      "is_nullable": "NO",
+      "ordinal_position": 1,
+      "table_name": "teams",
+      "udt_name": "int8"
+    },
+    {
+      "column_default": null,
+      "column_name": "nhl_team_id",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 2,
+      "table_name": "teams",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "nhl_franchise_id",
+      "data_type": "integer",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 3,
+      "table_name": "teams",
+      "udt_name": "int4"
+    },
+    {
+      "column_default": null,
+      "column_name": "abbreviation",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 4,
+      "table_name": "teams",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "name",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 5,
+      "table_name": "teams",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": null,
+      "column_name": "city",
+      "data_type": "character varying",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "YES",
+      "ordinal_position": 6,
+      "table_name": "teams",
+      "udt_name": "varchar"
+    },
+    {
+      "column_default": "true",
+      "column_name": "active",
+      "data_type": "boolean",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 7,
+      "table_name": "teams",
+      "udt_name": "bool"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "created_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 8,
+      "table_name": "teams",
+      "udt_name": "timestamptz"
+    },
+    {
+      "column_default": "CURRENT_TIMESTAMP",
+      "column_name": "updated_at",
+      "data_type": "timestamp with time zone",
+      "identity_generation": null,
+      "is_identity": "NO",
+      "is_nullable": "NO",
+      "ordinal_position": 9,
+      "table_name": "teams",
+      "udt_name": "timestamptz"
+    }
+  ],
+  "constraints": [
+    {
+      "constraint_name": "contract_seasons_contract_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (contract_id) REFERENCES contracts(id) ON DELETE CASCADE",
+      "table_name": "contract_seasons"
+    },
+    {
+      "constraint_name": "contract_seasons_contract_year_key",
+      "constraint_type": "u",
+      "definition": "UNIQUE (contract_id, season_start_year)",
+      "table_name": "contract_seasons"
+    },
+    {
+      "constraint_name": "contract_seasons_nonnegative_cap_percentage",
+      "constraint_type": "c",
+      "definition": "CHECK (cap_percentage IS NULL OR cap_percentage >= 0::numeric)",
+      "table_name": "contract_seasons"
+    },
+    {
+      "constraint_name": "contract_seasons_nonnegative_money",
+      "constraint_type": "c",
+      "definition": "CHECK ((base_salary_cents IS NULL OR base_salary_cents >= 0) AND (signing_bonus_cents IS NULL OR signing_bonus_cents >= 0) AND (performance_bonus_cents IS NULL OR performance_bonus_cents >= 0) AND (total_cash_cents IS NULL OR total_cash_cents >= 0) AND cap_hit_cents >= 0)",
+      "table_name": "contract_seasons"
+    },
+    {
+      "constraint_name": "contract_seasons_owning_team_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (owning_team_id) REFERENCES teams(id) ON DELETE RESTRICT",
+      "table_name": "contract_seasons"
+    },
+    {
+      "constraint_name": "contract_seasons_pkey",
+      "constraint_type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "contract_seasons"
+    },
+    {
+      "constraint_name": "contract_seasons_season_start_year_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (season_start_year) REFERENCES seasons(start_year) ON DELETE RESTRICT",
+      "table_name": "contract_seasons"
+    },
+    {
+      "constraint_name": "contracts_end_season_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (end_season) REFERENCES seasons(start_year) ON DELETE RESTRICT",
+      "table_name": "contracts"
+    },
+    {
+      "constraint_name": "contracts_nonnegative_average",
+      "constraint_type": "c",
+      "definition": "CHECK (average_value_cents IS NULL OR average_value_cents >= 0)",
+      "table_name": "contracts"
+    },
+    {
+      "constraint_name": "contracts_nonnegative_value",
+      "constraint_type": "c",
+      "definition": "CHECK (total_value_cents IS NULL OR total_value_cents >= 0)",
+      "table_name": "contracts"
+    },
+    {
+      "constraint_name": "contracts_pkey",
+      "constraint_type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "contracts"
+    },
+    {
+      "constraint_name": "contracts_player_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE RESTRICT",
+      "table_name": "contracts"
+    },
+    {
+      "constraint_name": "contracts_positive_term",
+      "constraint_type": "c",
+      "definition": "CHECK (term_years > 0)",
+      "table_name": "contracts"
+    },
+    {
+      "constraint_name": "contracts_signing_team_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (signing_team_id) REFERENCES teams(id) ON DELETE RESTRICT",
+      "table_name": "contracts"
+    },
+    {
+      "constraint_name": "contracts_source_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (source_id) REFERENCES data_sources(id) ON DELETE RESTRICT",
+      "table_name": "contracts"
+    },
+    {
+      "constraint_name": "contracts_start_season_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (start_season) REFERENCES seasons(start_year) ON DELETE RESTRICT",
+      "table_name": "contracts"
+    },
+    {
+      "constraint_name": "contracts_valid_expiry_status",
+      "constraint_type": "c",
+      "definition": "CHECK (expiry_status IS NULL OR (expiry_status::text = ANY (ARRAY['RFA'::character varying, 'UFA'::character varying]::text[])))",
+      "table_name": "contracts"
+    },
+    {
+      "constraint_name": "contracts_valid_seasons",
+      "constraint_type": "c",
+      "definition": "CHECK (end_season >= start_season)",
+      "table_name": "contracts"
+    },
+    {
+      "constraint_name": "data_sources_code_key",
+      "constraint_type": "u",
+      "definition": "UNIQUE (code)",
+      "table_name": "data_sources"
+    },
+    {
+      "constraint_name": "data_sources_pkey",
+      "constraint_type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "data_sources"
+    },
+    {
+      "constraint_name": "games_away_team_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (away_team_id) REFERENCES teams(id) ON DELETE RESTRICT",
+      "table_name": "games"
+    },
+    {
+      "constraint_name": "games_distinct_teams",
+      "constraint_type": "c",
+      "definition": "CHECK (away_team_id <> home_team_id)",
+      "table_name": "games"
+    },
+    {
+      "constraint_name": "games_home_team_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (home_team_id) REFERENCES teams(id) ON DELETE RESTRICT",
+      "table_name": "games"
+    },
+    {
+      "constraint_name": "games_nhl_game_id_key",
+      "constraint_type": "u",
+      "definition": "UNIQUE (nhl_game_id)",
+      "table_name": "games"
+    },
+    {
+      "constraint_name": "games_nonnegative_scores",
+      "constraint_type": "c",
+      "definition": "CHECK ((away_score IS NULL OR away_score >= 0) AND (home_score IS NULL OR home_score >= 0))",
+      "table_name": "games"
+    },
+    {
+      "constraint_name": "games_pkey",
+      "constraint_type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "games"
+    },
+    {
+      "constraint_name": "games_season_start_year_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (season_start_year) REFERENCES seasons(start_year) ON DELETE RESTRICT",
+      "table_name": "games"
+    },
+    {
+      "constraint_name": "games_valid_game_type",
+      "constraint_type": "c",
+      "definition": "CHECK (game_type = ANY (ARRAY[1, 2, 3]))",
+      "table_name": "games"
+    },
+    {
+      "constraint_name": "goalie_advanced_season_stats_ingestion_run_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (ingestion_run_id) REFERENCES ingestion_runs(id) ON DELETE SET NULL",
+      "table_name": "goalie_advanced_season_stats"
+    },
+    {
+      "constraint_name": "goalie_advanced_season_stats_pkey",
+      "constraint_type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "goalie_advanced_season_stats"
+    },
+    {
+      "constraint_name": "goalie_advanced_season_stats_player_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE",
+      "table_name": "goalie_advanced_season_stats"
+    },
+    {
+      "constraint_name": "goalie_advanced_season_stats_season_start_year_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (season_start_year) REFERENCES seasons(start_year) ON DELETE RESTRICT",
+      "table_name": "goalie_advanced_season_stats"
+    },
+    {
+      "constraint_name": "goalie_advanced_season_stats_source_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (source_id) REFERENCES data_sources(id) ON DELETE RESTRICT",
+      "table_name": "goalie_advanced_season_stats"
+    },
+    {
+      "constraint_name": "goalie_advanced_season_stats_team_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE RESTRICT",
+      "table_name": "goalie_advanced_season_stats"
+    },
+    {
+      "constraint_name": "goalie_advanced_stats_valid_game_type",
+      "constraint_type": "c",
+      "definition": "CHECK (game_type = ANY (ARRAY[2, 3]))",
+      "table_name": "goalie_advanced_season_stats"
+    },
+    {
+      "constraint_name": "goalie_advanced_stats_valid_scope",
+      "constraint_type": "c",
+      "definition": "CHECK (stat_scope::text = 'TEAM'::text AND team_id IS NOT NULL OR stat_scope::text = 'TOTAL'::text AND team_id IS NULL)",
+      "table_name": "goalie_advanced_season_stats"
+    },
+    {
+      "constraint_name": "goalie_season_stats_ingestion_run_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (ingestion_run_id) REFERENCES ingestion_runs(id) ON DELETE SET NULL",
+      "table_name": "goalie_season_stats"
+    },
+    {
+      "constraint_name": "goalie_season_stats_pkey",
+      "constraint_type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "goalie_season_stats"
+    },
+    {
+      "constraint_name": "goalie_season_stats_player_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE",
+      "table_name": "goalie_season_stats"
+    },
+    {
+      "constraint_name": "goalie_season_stats_season_start_year_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (season_start_year) REFERENCES seasons(start_year) ON DELETE RESTRICT",
+      "table_name": "goalie_season_stats"
+    },
+    {
+      "constraint_name": "goalie_season_stats_source_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (source_id) REFERENCES data_sources(id) ON DELETE RESTRICT",
+      "table_name": "goalie_season_stats"
+    },
+    {
+      "constraint_name": "goalie_season_stats_team_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE RESTRICT",
+      "table_name": "goalie_season_stats"
+    },
+    {
+      "constraint_name": "goalie_season_stats_valid_game_type",
+      "constraint_type": "c",
+      "definition": "CHECK (game_type = ANY (ARRAY[2, 3]))",
+      "table_name": "goalie_season_stats"
+    },
+    {
+      "constraint_name": "goalie_season_stats_valid_scope",
+      "constraint_type": "c",
+      "definition": "CHECK (stat_scope::text = 'TEAM'::text AND team_id IS NOT NULL OR stat_scope::text = 'TOTAL'::text AND team_id IS NULL)",
+      "table_name": "goalie_season_stats"
+    },
+    {
+      "constraint_name": "ingestion_runs_nonnegative_counts",
+      "constraint_type": "c",
+      "definition": "CHECK (records_read >= 0 AND records_created >= 0 AND records_updated >= 0 AND records_skipped >= 0)",
+      "table_name": "ingestion_runs"
+    },
+    {
+      "constraint_name": "ingestion_runs_pkey",
+      "constraint_type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "ingestion_runs"
+    },
+    {
+      "constraint_name": "ingestion_runs_source_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (source_id) REFERENCES data_sources(id) ON DELETE RESTRICT",
+      "table_name": "ingestion_runs"
+    },
+    {
+      "constraint_name": "ingestion_runs_valid_status",
+      "constraint_type": "c",
+      "definition": "CHECK (status::text = ANY (ARRAY['running'::character varying, 'succeeded'::character varying, 'failed'::character varying, 'cancelled'::character varying]::text[]))",
+      "table_name": "ingestion_runs"
+    },
+    {
+      "constraint_name": "ltir_overrides_pkey",
+      "constraint_type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "ltir_overrides"
+    },
+    {
+      "constraint_name": "ltir_overrides_player_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE",
+      "table_name": "ltir_overrides"
+    },
+    {
+      "constraint_name": "ltir_overrides_valid_dates",
+      "constraint_type": "c",
+      "definition": "CHECK (end_date IS NULL OR end_date >= start_date)",
+      "table_name": "ltir_overrides"
+    },
+    {
+      "constraint_name": "model_versions_model_version_key",
+      "constraint_type": "u",
+      "definition": "UNIQUE (model_type, version)",
+      "table_name": "model_versions"
+    },
+    {
+      "constraint_name": "model_versions_pkey",
+      "constraint_type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "model_versions"
+    },
+    {
+      "constraint_name": "model_versions_training_end_season_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (training_end_season) REFERENCES seasons(start_year) ON DELETE RESTRICT",
+      "table_name": "model_versions"
+    },
+    {
+      "constraint_name": "model_versions_training_start_season_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (training_start_season) REFERENCES seasons(start_year) ON DELETE RESTRICT",
+      "table_name": "model_versions"
+    },
+    {
+      "constraint_name": "model_versions_valid_training_range",
+      "constraint_type": "c",
+      "definition": "CHECK (training_start_season IS NULL OR training_end_season IS NULL OR training_end_season >= training_start_season)",
+      "table_name": "model_versions"
+    },
+    {
+      "constraint_name": "player_external_ids_pkey",
+      "constraint_type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "player_external_ids"
+    },
+    {
+      "constraint_name": "player_external_ids_player_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE",
+      "table_name": "player_external_ids"
+    },
+    {
+      "constraint_name": "player_external_ids_source_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (source_id) REFERENCES data_sources(id) ON DELETE RESTRICT",
+      "table_name": "player_external_ids"
+    },
+    {
+      "constraint_name": "player_external_ids_source_key",
+      "constraint_type": "u",
+      "definition": "UNIQUE (source_id, external_id)",
+      "table_name": "player_external_ids"
+    },
+    {
+      "constraint_name": "player_game_stats_game_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE",
+      "table_name": "player_game_stats"
+    },
+    {
+      "constraint_name": "player_game_stats_ingestion_run_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (ingestion_run_id) REFERENCES ingestion_runs(id) ON DELETE SET NULL",
+      "table_name": "player_game_stats"
+    },
+    {
+      "constraint_name": "player_game_stats_pkey",
+      "constraint_type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "player_game_stats"
+    },
+    {
+      "constraint_name": "player_game_stats_player_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE",
+      "table_name": "player_game_stats"
+    },
+    {
+      "constraint_name": "player_game_stats_row_key",
+      "constraint_type": "u",
+      "definition": "UNIQUE (game_id, player_id, team_id, source_id)",
+      "table_name": "player_game_stats"
+    },
+    {
+      "constraint_name": "player_game_stats_source_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (source_id) REFERENCES data_sources(id) ON DELETE RESTRICT",
+      "table_name": "player_game_stats"
+    },
+    {
+      "constraint_name": "player_game_stats_team_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE RESTRICT",
+      "table_name": "player_game_stats"
+    },
+    {
+      "constraint_name": "player_game_stats_valid_position_type",
+      "constraint_type": "c",
+      "definition": "CHECK (position_type::text = ANY (ARRAY['skater'::character varying, 'goalie'::character varying]::text[]))",
+      "table_name": "player_game_stats"
+    },
+    {
+      "constraint_name": "player_team_stints_pkey",
+      "constraint_type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "player_team_stints"
+    },
+    {
+      "constraint_name": "player_team_stints_player_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE",
+      "table_name": "player_team_stints"
+    },
+    {
+      "constraint_name": "player_team_stints_season_start_year_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (season_start_year) REFERENCES seasons(start_year) ON DELETE RESTRICT",
+      "table_name": "player_team_stints"
+    },
+    {
+      "constraint_name": "player_team_stints_team_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE RESTRICT",
+      "table_name": "player_team_stints"
+    },
+    {
+      "constraint_name": "player_team_stints_valid_dates",
+      "constraint_type": "c",
+      "definition": "CHECK (departed_on IS NULL OR joined_on IS NULL OR departed_on >= joined_on)",
+      "table_name": "player_team_stints"
+    },
+    {
+      "constraint_name": "players_pkey",
+      "constraint_type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "players"
+    },
+    {
+      "constraint_name": "players_valid_handedness",
+      "constraint_type": "c",
+      "definition": "CHECK (shoots_catches IS NULL OR (shoots_catches = ANY (ARRAY['L'::bpchar, 'R'::bpchar])))",
+      "table_name": "players"
+    },
+    {
+      "constraint_name": "players_valid_position",
+      "constraint_type": "c",
+      "definition": "CHECK (primary_position IS NULL OR (primary_position::text = ANY (ARRAY['C'::character varying, 'LW'::character varying, 'RW'::character varying, 'D'::character varying, 'G'::character varying, 'F'::character varying]::text[])))",
+      "table_name": "players"
+    },
+    {
+      "constraint_name": "predictions_actual_contract_season_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (actual_contract_season_id) REFERENCES contract_seasons(id) ON DELETE SET NULL",
+      "table_name": "predictions"
+    },
+    {
+      "constraint_name": "predictions_model_version_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (model_version_id) REFERENCES model_versions(id) ON DELETE RESTRICT",
+      "table_name": "predictions"
+    },
+    {
+      "constraint_name": "predictions_nonnegative_aav",
+      "constraint_type": "c",
+      "definition": "CHECK (predicted_aav_cents IS NULL OR predicted_aav_cents >= 0)",
+      "table_name": "predictions"
+    },
+    {
+      "constraint_name": "predictions_nonnegative_cap_percentage",
+      "constraint_type": "c",
+      "definition": "CHECK (predicted_cap_percentage IS NULL OR predicted_cap_percentage >= 0::numeric)",
+      "table_name": "predictions"
+    },
+    {
+      "constraint_name": "predictions_pkey",
+      "constraint_type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "predictions"
+    },
+    {
+      "constraint_name": "predictions_player_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE SET NULL",
+      "table_name": "predictions"
+    },
+    {
+      "constraint_name": "predictions_target_season_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (target_season) REFERENCES seasons(start_year) ON DELETE RESTRICT",
+      "table_name": "predictions"
+    },
+    {
+      "constraint_name": "predictions_valid_position_group",
+      "constraint_type": "c",
+      "definition": "CHECK (position_group::text = ANY (ARRAY['forward'::character varying, 'defense'::character varying, 'goalie'::character varying]::text[]))",
+      "table_name": "predictions"
+    },
+    {
+      "constraint_name": "seasons_consecutive_years",
+      "constraint_type": "c",
+      "definition": "CHECK (end_year = (start_year + 1))",
+      "table_name": "seasons"
+    },
+    {
+      "constraint_name": "seasons_label_key",
+      "constraint_type": "u",
+      "definition": "UNIQUE (label)",
+      "table_name": "seasons"
+    },
+    {
+      "constraint_name": "seasons_pkey",
+      "constraint_type": "p",
+      "definition": "PRIMARY KEY (start_year)",
+      "table_name": "seasons"
+    },
+    {
+      "constraint_name": "seasons_positive_salary_cap",
+      "constraint_type": "c",
+      "definition": "CHECK (salary_cap_cents IS NULL OR salary_cap_cents >= 0)",
+      "table_name": "seasons"
+    },
+    {
+      "constraint_name": "seasons_valid_dates",
+      "constraint_type": "c",
+      "definition": "CHECK (regular_start_date IS NULL OR regular_end_date IS NULL OR regular_end_date >= regular_start_date)",
+      "table_name": "seasons"
+    },
+    {
+      "constraint_name": "skater_advanced_season_stats_ingestion_run_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (ingestion_run_id) REFERENCES ingestion_runs(id) ON DELETE SET NULL",
+      "table_name": "skater_advanced_season_stats"
+    },
+    {
+      "constraint_name": "skater_advanced_season_stats_pkey",
+      "constraint_type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "skater_advanced_season_stats"
+    },
+    {
+      "constraint_name": "skater_advanced_season_stats_player_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE",
+      "table_name": "skater_advanced_season_stats"
+    },
+    {
+      "constraint_name": "skater_advanced_season_stats_season_start_year_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (season_start_year) REFERENCES seasons(start_year) ON DELETE RESTRICT",
+      "table_name": "skater_advanced_season_stats"
+    },
+    {
+      "constraint_name": "skater_advanced_season_stats_source_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (source_id) REFERENCES data_sources(id) ON DELETE RESTRICT",
+      "table_name": "skater_advanced_season_stats"
+    },
+    {
+      "constraint_name": "skater_advanced_season_stats_team_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE RESTRICT",
+      "table_name": "skater_advanced_season_stats"
+    },
+    {
+      "constraint_name": "skater_advanced_stats_valid_game_type",
+      "constraint_type": "c",
+      "definition": "CHECK (game_type = ANY (ARRAY[2, 3]))",
+      "table_name": "skater_advanced_season_stats"
+    },
+    {
+      "constraint_name": "skater_advanced_stats_valid_scope",
+      "constraint_type": "c",
+      "definition": "CHECK (stat_scope::text = 'TEAM'::text AND team_id IS NOT NULL OR stat_scope::text = 'TOTAL'::text AND team_id IS NULL)",
+      "table_name": "skater_advanced_season_stats"
+    },
+    {
+      "constraint_name": "skater_season_stats_ingestion_run_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (ingestion_run_id) REFERENCES ingestion_runs(id) ON DELETE SET NULL",
+      "table_name": "skater_season_stats"
+    },
+    {
+      "constraint_name": "skater_season_stats_pkey",
+      "constraint_type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "skater_season_stats"
+    },
+    {
+      "constraint_name": "skater_season_stats_player_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE",
+      "table_name": "skater_season_stats"
+    },
+    {
+      "constraint_name": "skater_season_stats_season_start_year_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (season_start_year) REFERENCES seasons(start_year) ON DELETE RESTRICT",
+      "table_name": "skater_season_stats"
+    },
+    {
+      "constraint_name": "skater_season_stats_source_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (source_id) REFERENCES data_sources(id) ON DELETE RESTRICT",
+      "table_name": "skater_season_stats"
+    },
+    {
+      "constraint_name": "skater_season_stats_team_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE RESTRICT",
+      "table_name": "skater_season_stats"
+    },
+    {
+      "constraint_name": "skater_season_stats_valid_game_type",
+      "constraint_type": "c",
+      "definition": "CHECK (game_type = ANY (ARRAY[2, 3]))",
+      "table_name": "skater_season_stats"
+    },
+    {
+      "constraint_name": "skater_season_stats_valid_scope",
+      "constraint_type": "c",
+      "definition": "CHECK (stat_scope::text = 'TEAM'::text AND team_id IS NOT NULL OR stat_scope::text = 'TOTAL'::text AND team_id IS NULL)",
+      "table_name": "skater_season_stats"
+    },
+    {
+      "constraint_name": "source_records_ingestion_run_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (ingestion_run_id) REFERENCES ingestion_runs(id) ON DELETE SET NULL",
+      "table_name": "source_records"
+    },
+    {
+      "constraint_name": "source_records_pkey",
+      "constraint_type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "source_records"
+    },
+    {
+      "constraint_name": "source_records_source_id_fkey",
+      "constraint_type": "f",
+      "definition": "FOREIGN KEY (source_id) REFERENCES data_sources(id) ON DELETE RESTRICT",
+      "table_name": "source_records"
+    },
+    {
+      "constraint_name": "source_records_version_key",
+      "constraint_type": "u",
+      "definition": "UNIQUE (source_id, entity_type, external_key, payload_hash)",
+      "table_name": "source_records"
+    },
+    {
+      "constraint_name": "teams_abbreviation_key",
+      "constraint_type": "u",
+      "definition": "UNIQUE (abbreviation)",
+      "table_name": "teams"
+    },
+    {
+      "constraint_name": "teams_nhl_team_id_key",
+      "constraint_type": "u",
+      "definition": "UNIQUE (nhl_team_id)",
+      "table_name": "teams"
+    },
+    {
+      "constraint_name": "teams_pkey",
+      "constraint_type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "table_name": "teams"
+    }
+  ],
+  "enums": [
+    {
+      "enum_name": "roster_status",
+      "sort_order": 1,
+      "value": "ACTIVE"
+    },
+    {
+      "enum_name": "roster_status",
+      "sort_order": 2,
+      "value": "MINORS"
+    },
+    {
+      "enum_name": "roster_status",
+      "sort_order": 3,
+      "value": "LTIR"
+    },
+    {
+      "enum_name": "roster_status",
+      "sort_order": 4,
+      "value": "UNKNOWN"
+    }
+  ],
+  "indexes": [
+    {
+      "definition": "CREATE UNIQUE INDEX contract_seasons_contract_year_key ON public.contract_seasons USING btree (contract_id, season_start_year)",
+      "index_name": "contract_seasons_contract_year_key",
+      "table_name": "contract_seasons"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX contract_seasons_pkey ON public.contract_seasons USING btree (id)",
+      "index_name": "contract_seasons_pkey",
+      "table_name": "contract_seasons"
+    },
+    {
+      "definition": "CREATE INDEX contract_seasons_season_idx ON public.contract_seasons USING btree (season_start_year, contract_id)",
+      "index_name": "contract_seasons_season_idx",
+      "table_name": "contract_seasons"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX contracts_pkey ON public.contracts USING btree (id)",
+      "index_name": "contracts_pkey",
+      "table_name": "contracts"
+    },
+    {
+      "definition": "CREATE INDEX contracts_player_seasons_idx ON public.contracts USING btree (player_id, start_season, end_season)",
+      "index_name": "contracts_player_seasons_idx",
+      "table_name": "contracts"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX contracts_source_external_id_idx ON public.contracts USING btree (source_id, external_id) WHERE ((source_id IS NOT NULL) AND (external_id IS NOT NULL))",
+      "index_name": "contracts_source_external_id_idx",
+      "table_name": "contracts"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX data_sources_code_key ON public.data_sources USING btree (code)",
+      "index_name": "data_sources_code_key",
+      "table_name": "data_sources"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX data_sources_pkey ON public.data_sources USING btree (id)",
+      "index_name": "data_sources_pkey",
+      "table_name": "data_sources"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX games_nhl_game_id_key ON public.games USING btree (nhl_game_id)",
+      "index_name": "games_nhl_game_id_key",
+      "table_name": "games"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX games_pkey ON public.games USING btree (id)",
+      "index_name": "games_pkey",
+      "table_name": "games"
+    },
+    {
+      "definition": "CREATE INDEX games_schedule_idx ON public.games USING btree (season_start_year, game_type, start_time_utc)",
+      "index_name": "games_schedule_idx",
+      "table_name": "games"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX goalie_advanced_season_stats_pkey ON public.goalie_advanced_season_stats USING btree (id)",
+      "index_name": "goalie_advanced_season_stats_pkey",
+      "table_name": "goalie_advanced_season_stats"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX goalie_advanced_stats_grain_idx ON public.goalie_advanced_season_stats USING btree (player_id, season_start_year, COALESCE(team_id, (0)::bigint), stat_scope, game_type, situation, source_id)",
+      "index_name": "goalie_advanced_stats_grain_idx",
+      "table_name": "goalie_advanced_season_stats"
+    },
+    {
+      "definition": "CREATE INDEX goalie_advanced_stats_training_idx ON public.goalie_advanced_season_stats USING btree (season_start_year, situation, player_id)",
+      "index_name": "goalie_advanced_stats_training_idx",
+      "table_name": "goalie_advanced_season_stats"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX goalie_season_stats_grain_idx ON public.goalie_season_stats USING btree (player_id, season_start_year, COALESCE(team_id, (0)::bigint), stat_scope, game_type, source_id)",
+      "index_name": "goalie_season_stats_grain_idx",
+      "table_name": "goalie_season_stats"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX goalie_season_stats_pkey ON public.goalie_season_stats USING btree (id)",
+      "index_name": "goalie_season_stats_pkey",
+      "table_name": "goalie_season_stats"
+    },
+    {
+      "definition": "CREATE INDEX goalie_season_stats_player_history_idx ON public.goalie_season_stats USING btree (player_id, season_start_year DESC, game_type)",
+      "index_name": "goalie_season_stats_player_history_idx",
+      "table_name": "goalie_season_stats"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX ingestion_runs_pkey ON public.ingestion_runs USING btree (id)",
+      "index_name": "ingestion_runs_pkey",
+      "table_name": "ingestion_runs"
+    },
+    {
+      "definition": "CREATE INDEX ingestion_runs_recent_idx ON public.ingestion_runs USING btree (job_name, started_at DESC)",
+      "index_name": "ingestion_runs_recent_idx",
+      "table_name": "ingestion_runs"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX ltir_overrides_pkey ON public.ltir_overrides USING btree (id)",
+      "index_name": "ltir_overrides_pkey",
+      "table_name": "ltir_overrides"
+    },
+    {
+      "definition": "CREATE INDEX ltir_overrides_player_dates_idx ON public.ltir_overrides USING btree (player_id, start_date, end_date)",
+      "index_name": "ltir_overrides_player_dates_idx",
+      "table_name": "ltir_overrides"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX model_versions_model_version_key ON public.model_versions USING btree (model_type, version)",
+      "index_name": "model_versions_model_version_key",
+      "table_name": "model_versions"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX model_versions_one_active_per_type_idx ON public.model_versions USING btree (model_type) WHERE active",
+      "index_name": "model_versions_one_active_per_type_idx",
+      "table_name": "model_versions"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX model_versions_pkey ON public.model_versions USING btree (id)",
+      "index_name": "model_versions_pkey",
+      "table_name": "model_versions"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX player_external_ids_pkey ON public.player_external_ids USING btree (id)",
+      "index_name": "player_external_ids_pkey",
+      "table_name": "player_external_ids"
+    },
+    {
+      "definition": "CREATE INDEX player_external_ids_player_idx ON public.player_external_ids USING btree (player_id, source_id)",
+      "index_name": "player_external_ids_player_idx",
+      "table_name": "player_external_ids"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX player_external_ids_source_key ON public.player_external_ids USING btree (source_id, external_id)",
+      "index_name": "player_external_ids_source_key",
+      "table_name": "player_external_ids"
+    },
+    {
+      "definition": "CREATE INDEX player_game_stats_history_idx ON public.player_game_stats USING btree (player_id, game_id DESC)",
+      "index_name": "player_game_stats_history_idx",
+      "table_name": "player_game_stats"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX player_game_stats_pkey ON public.player_game_stats USING btree (id)",
+      "index_name": "player_game_stats_pkey",
+      "table_name": "player_game_stats"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX player_game_stats_row_key ON public.player_game_stats USING btree (game_id, player_id, team_id, source_id)",
+      "index_name": "player_game_stats_row_key",
+      "table_name": "player_game_stats"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX player_team_stints_identity_idx ON public.player_team_stints USING btree (player_id, season_start_year, team_id, COALESCE(joined_on, '0001-01-01'::date))",
+      "index_name": "player_team_stints_identity_idx",
+      "table_name": "player_team_stints"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX player_team_stints_pkey ON public.player_team_stints USING btree (id)",
+      "index_name": "player_team_stints_pkey",
+      "table_name": "player_team_stints"
+    },
+    {
+      "definition": "CREATE INDEX players_name_idx ON public.players USING btree (lower((last_name)::text), lower((first_name)::text))",
+      "index_name": "players_name_idx",
+      "table_name": "players"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX players_pkey ON public.players USING btree (id)",
+      "index_name": "players_pkey",
+      "table_name": "players"
+    },
+    {
+      "definition": "CREATE INDEX players_roster_status_idx ON public.players USING btree (roster_status)",
+      "index_name": "players_roster_status_idx",
+      "table_name": "players"
+    },
+    {
+      "definition": "CREATE INDEX predictions_model_idx ON public.predictions USING btree (model_version_id, created_at DESC)",
+      "index_name": "predictions_model_idx",
+      "table_name": "predictions"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX predictions_pkey ON public.predictions USING btree (id)",
+      "index_name": "predictions_pkey",
+      "table_name": "predictions"
+    },
+    {
+      "definition": "CREATE INDEX predictions_player_history_idx ON public.predictions USING btree (player_id, created_at DESC)",
+      "index_name": "predictions_player_history_idx",
+      "table_name": "predictions"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX seasons_label_key ON public.seasons USING btree (label)",
+      "index_name": "seasons_label_key",
+      "table_name": "seasons"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX seasons_pkey ON public.seasons USING btree (start_year)",
+      "index_name": "seasons_pkey",
+      "table_name": "seasons"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX skater_advanced_season_stats_pkey ON public.skater_advanced_season_stats USING btree (id)",
+      "index_name": "skater_advanced_season_stats_pkey",
+      "table_name": "skater_advanced_season_stats"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX skater_advanced_stats_grain_idx ON public.skater_advanced_season_stats USING btree (player_id, season_start_year, COALESCE(team_id, (0)::bigint), stat_scope, game_type, situation, source_id)",
+      "index_name": "skater_advanced_stats_grain_idx",
+      "table_name": "skater_advanced_season_stats"
+    },
+    {
+      "definition": "CREATE INDEX skater_advanced_stats_training_idx ON public.skater_advanced_season_stats USING btree (season_start_year, situation, player_id)",
+      "index_name": "skater_advanced_stats_training_idx",
+      "table_name": "skater_advanced_season_stats"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX skater_season_stats_grain_idx ON public.skater_season_stats USING btree (player_id, season_start_year, COALESCE(team_id, (0)::bigint), stat_scope, game_type, source_id)",
+      "index_name": "skater_season_stats_grain_idx",
+      "table_name": "skater_season_stats"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX skater_season_stats_pkey ON public.skater_season_stats USING btree (id)",
+      "index_name": "skater_season_stats_pkey",
+      "table_name": "skater_season_stats"
+    },
+    {
+      "definition": "CREATE INDEX skater_season_stats_player_history_idx ON public.skater_season_stats USING btree (player_id, season_start_year DESC, game_type)",
+      "index_name": "skater_season_stats_player_history_idx",
+      "table_name": "skater_season_stats"
+    },
+    {
+      "definition": "CREATE INDEX source_records_lookup_idx ON public.source_records USING btree (source_id, entity_type, external_key, fetched_at DESC)",
+      "index_name": "source_records_lookup_idx",
+      "table_name": "source_records"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX source_records_pkey ON public.source_records USING btree (id)",
+      "index_name": "source_records_pkey",
+      "table_name": "source_records"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX source_records_version_key ON public.source_records USING btree (source_id, entity_type, external_key, payload_hash)",
+      "index_name": "source_records_version_key",
+      "table_name": "source_records"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX teams_abbreviation_key ON public.teams USING btree (abbreviation)",
+      "index_name": "teams_abbreviation_key",
+      "table_name": "teams"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX teams_nhl_team_id_key ON public.teams USING btree (nhl_team_id)",
+      "index_name": "teams_nhl_team_id_key",
+      "table_name": "teams"
+    },
+    {
+      "definition": "CREATE UNIQUE INDEX teams_pkey ON public.teams USING btree (id)",
+      "index_name": "teams_pkey",
+      "table_name": "teams"
+    }
+  ],
+  "tables": [
+    {
+      "table_name": "contract_seasons"
+    },
+    {
+      "table_name": "contracts"
+    },
+    {
+      "table_name": "data_sources"
+    },
+    {
+      "table_name": "games"
+    },
+    {
+      "table_name": "goalie_advanced_season_stats"
+    },
+    {
+      "table_name": "goalie_season_stats"
+    },
+    {
+      "table_name": "ingestion_runs"
+    },
+    {
+      "table_name": "ltir_overrides"
+    },
+    {
+      "table_name": "model_versions"
+    },
+    {
+      "table_name": "player_external_ids"
+    },
+    {
+      "table_name": "player_game_stats"
+    },
+    {
+      "table_name": "player_team_stints"
+    },
+    {
+      "table_name": "players"
+    },
+    {
+      "table_name": "predictions"
+    },
+    {
+      "table_name": "seasons"
+    },
+    {
+      "table_name": "skater_advanced_season_stats"
+    },
+    {
+      "table_name": "skater_season_stats"
+    },
+    {
+      "table_name": "source_records"
+    },
+    {
+      "table_name": "teams"
+    }
+  ]
+}

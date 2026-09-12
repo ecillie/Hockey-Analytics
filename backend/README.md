@@ -1,7 +1,7 @@
 # TradeValue backend API
 
-The backend is a read-only FastAPI service backed by the PostgreSQL schema in
-`database/schema.sql`. It implements every route in `docs/api-contract.md`,
+The backend is a read-only FastAPI service backed by an Alembic-managed
+PostgreSQL schema. It implements every route in `docs/api-contract.md`,
 including player and team browsing, Hockey Value, contracts, cap estimates,
 search, overview aggregates, and comparison.
 
@@ -12,7 +12,7 @@ From the repository root:
 ```bash
 python -m pip install -r backend/requirements-dev.txt
 cp backend/.env.example backend/.env
-psql "$DATABASE_URL" -f backend/database/schema.sql
+python -m alembic -c backend/alembic.ini upgrade head
 cd backend
 uvicorn app.main:app --reload
 ```
@@ -56,16 +56,17 @@ PYTHONPATH=backend pytest -q backend/tests ml/tests
 
 HTTP and service tests verify response contracts, validation errors, route
 coverage, CORS, and service-layer branching. PostgreSQL integration tests run
-when `TEST_DATABASE_URL` is set; the target database must already contain the
-schema and must be disposable because the tests truncate application tables.
-CI provisions a dedicated PostgreSQL service, applies `database/schema.sql`,
-and runs the integration suite automatically.
+when `TEST_DATABASE_URL` is set; the target database must be disposable because
+the tests truncate application tables. CI provisions a dedicated PostgreSQL
+service, migrates an empty database to Alembic head, verifies the catalog and a
+downgrade/re-upgrade cycle, then runs the integration suite automatically.
 
 To run the integration tests against a dedicated local test database:
 
 ```bash
 createdb tradevalue_test
-psql postgresql://localhost/tradevalue_test -f backend/database/schema.sql
+DATABASE_URL=postgresql://localhost/tradevalue_test \
+  python -m alembic -c backend/alembic.ini upgrade head
 TEST_DATABASE_URL=postgresql://localhost/tradevalue_test \
   PYTHONPATH=backend pytest -q backend/tests/test_postgres_integration.py
 ```
@@ -103,11 +104,17 @@ its local SQLAlchemy pool deliberately small so horizontally scaled Functions do
 not create excessive client connections. Keep a direct, non-pooled Neon URL for
 schema application and ingestion jobs; do not expose either URL to the frontend.
 
-Apply the schema before the first API deployment:
+Apply migrations using the direct connection before the API deployment:
 
 ```bash
-psql "$NEON_DIRECT_DATABASE_URL" -f backend/database/schema.sql
+DATABASE_URL="$NEON_DIRECT_DATABASE_URL" \
+  python -m alembic -c backend/alembic.ini upgrade head
 ```
+
+The repository's manually dispatched `Database migration` workflow performs
+this as a separately gated environment operation. Configure a direct,
+non-pooled `DATABASE_URL` secret in both GitHub `nonprod` and `prod`
+Environments, and require reviewers for the `prod` Environment.
 
 For the frontend project, set these variables in both Production and Preview:
 

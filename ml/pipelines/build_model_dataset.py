@@ -16,6 +16,10 @@ FORBIDDEN_CONTRACT_COLUMNS = {
     "aav",
 }
 
+# Fixed unit keeps cap context comparable across seasons without learning a
+# scale from contracts or from the evaluation/test rows.
+SALARY_CAP_NORMALIZATION_DOLLARS = 100_000_000.0
+
 
 def build_model_dataset(
     min_games: int = 1,
@@ -59,6 +63,9 @@ def build_model_dataset(
             "F": "forward",
             "D": "defense",
         }
+    )
+    df["salary_cap_fraction"] = (
+        df["salary_cap_dollars"] / SALARY_CAP_NORMALIZATION_DOLLARS
     )
 
     # Ensure one observation per player-season.

@@ -85,6 +85,8 @@ jobs:
           python backend/database/schema_snapshot.py --actual coverage/migrations/schema.round-trip.json
       - name: Smoke-test migrated API
         run: PYTHONPATH=backend python backend/database/migration_smoke.py
+      - name: Run deterministic ingestion and data-quality gate
+        run: PYTHONPATH=backend pytest --no-cov -q backend/tests/test_ingestion.py
       - name: Run backend and ML tests with coverage
         run: PYTHONPATH=backend pytest -q
       - name: Enforce complete service-layer coverage

@@ -61,6 +61,12 @@ the tests truncate application tables. CI provisions a dedicated PostgreSQL
 service, migrates an empty database to Alembic head, verifies the catalog and a
 downgrade/re-upgrade cycle, then runs the integration suite automatically.
 
+The ingestion gate uses small checked-in MoneyPuck and CapWages-shaped fixtures;
+it never calls live NHL, MoneyPuck, or CapWages services. It validates source
+schemas and required values, season coverage, player/season/stat deduplication,
+idempotent typed-field upserts, salary-cap reference data, foreign-key behavior,
+and transaction rollback after a failed batch.
+
 To run the integration tests against a dedicated local test database:
 
 ```bash

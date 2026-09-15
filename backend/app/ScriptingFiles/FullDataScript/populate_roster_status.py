@@ -6,6 +6,7 @@ Usage from the backend directory:
 
 from __future__ import annotations
 
+from dataclasses import asdict
 import logging
 
 from app.database import database_transaction, init_db
@@ -21,9 +22,34 @@ from app.ScriptingFiles.FullDataScript.roster_status.roster_repository import (
 from app.ScriptingFiles.FullDataScript.roster_status.roster_status_service import (
     RosterStatusService,
 )
+from app.ScriptingFiles.FullDataScript.ingestion_tracking import tracked_ingestion
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+class IncompleteRosterFeedError(RuntimeError):
+    pass
+
+
+@tracked_ingestion("nhl", "populate_roster_status")
+def sync_roster_status() -> dict[str, object]:
+    with database_transaction() as connection:
+        service = RosterStatusService(
+            repository=PostgresRosterRepository(connection),
+            nhl_service=NhlRosterService(),
+            ahl_service=AhlRosterService(),
+        )
+        summary = service.sync()
+        if summary.errors:
+            raise IncompleteRosterFeedError("; ".join(summary.errors))
+        result = asdict(summary)
+        result.update({
+            "records_read": summary.statuses_updated + summary.preserved_count,
+            "records_updated": summary.statuses_updated,
+            "records_skipped": summary.preserved_count,
+        })
+        return result
 
 
 def main() -> int:
@@ -33,13 +59,10 @@ def main() -> int:
     )
     try:
         init_db()
-        with database_transaction() as connection:
-            service = RosterStatusService(
-                repository=PostgresRosterRepository(connection),
-                nhl_service=NhlRosterService(),
-                ahl_service=AhlRosterService(),
-            )
-            summary = service.sync()
+        summary = sync_roster_status()
+    except IncompleteRosterFeedError:
+        LOGGER.exception("Roster-status sync refused an incomplete feed; changes were rolled back")
+        return 2
     except Exception:
         LOGGER.exception("Roster-status sync failed; database changes were rolled back")
         return 1
@@ -47,16 +70,13 @@ def main() -> int:
     LOGGER.info(
         "Roster sync complete: updated=%s active=%s minors=%s ltir=%s "
         "unknown=%s preserved=%s",
-        summary.statuses_updated,
-        summary.active_count,
-        summary.minors_count,
-        summary.ltir_count,
-        summary.unknown_count,
-        summary.preserved_count,
+        summary["statuses_updated"],
+        summary["active_count"],
+        summary["minors_count"],
+        summary["ltir_count"],
+        summary["unknown_count"],
+        summary["preserved_count"],
     )
-    if summary.errors:
-        LOGGER.error("Roster sync completed with incomplete feeds")
-        return 2
     return 0
 
 

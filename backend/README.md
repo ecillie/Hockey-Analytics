@@ -67,6 +67,20 @@ schemas and required values, season coverage, player/season/stat deduplication,
 idempotent typed-field upserts, salary-cap reference data, foreign-key behavior,
 and transaction rollback after a failed batch.
 
+Every schema-native ingestion stage records `running`, `succeeded`, `failed`, or
+`cancelled` state in `ingestion_runs`. PostgreSQL advisory locks reject a second
+copy of the same stage while one is active. Successful rows are upserted and
+source rows absent from a later snapshot are deliberately retained; loaders do
+not infer deletion from absence. MoneyPuck coverage, volume, and duplicate-ratio
+thresholds, NHL roster and schedule minimums, NHL stat invariants, and CapWages
+profile-success thresholds fail before writes. An incomplete roster feed rolls
+back the entire roster-status update.
+
+The production defaults expect MoneyPuck seasons 2008 through 2025, at least 30
+NHL teams, 500 active NHL players, 100 regular-season schedule games, and a 98%
+CapWages profile success rate. Tests override only the volume values so tiny
+fixtures exercise the identical validation and persistence paths.
+
 To run the integration tests against a dedicated local test database:
 
 ```bash

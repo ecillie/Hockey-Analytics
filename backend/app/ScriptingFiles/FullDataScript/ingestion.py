@@ -28,6 +28,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from app.database import database_transaction, init_db
+from app.ScriptingFiles.FullDataScript.ingestion_tracking import tracked_ingestion
 
 
 LOGGER = logging.getLogger(__name__)
@@ -45,6 +46,7 @@ MONEYPUCK_URLS = {
     "skater": "https://moneypuck.com/moneypuck/playerData/seasonSummary/2025/regular/skaters.csv",
     "goalie": "https://moneypuck.com/moneypuck/playerData/seasonSummary/2025/regular/goalies.csv",
 }
+RECONCILIATION_POLICY = "retain_missing"
 
 
 class IngestionValidationError(ValueError):
@@ -59,6 +61,47 @@ class DataQualityReport:
     duplicate_records: int
     seasons: tuple[int, ...]
 
+    @property
+    def duplicate_ratio(self) -> float:
+        return self.duplicate_records / self.records_read if self.records_read else 0.0
+
+
+def enforce_quality_thresholds(
+    report: DataQualityReport,
+    *,
+    minimum_rows: int,
+    maximum_duplicate_ratio: float,
+) -> None:
+    if report.records_valid < minimum_rows:
+        raise IngestionValidationError(
+            f"{report.source}: only {report.records_valid} valid rows; minimum is {minimum_rows}"
+        )
+    if report.duplicate_ratio > maximum_duplicate_ratio:
+        raise IngestionValidationError(
+            f"{report.source}: duplicate ratio {report.duplicate_ratio:.2%} exceeds "
+            f"{maximum_duplicate_ratio:.2%}"
+        )
+
+
+def validate_stat_invariants(kind: str, row: dict[str, Any], *, source: str) -> None:
+    """Reject internally inconsistent typed statistics before persistence."""
+    if kind == "skater":
+        goals = _number(row.get("goals"), integer=True)
+        assists = _number(row.get("assists"), integer=True)
+        points = _number(row.get("points"), integer=True)
+        if None not in (goals, assists, points) and points != goals + assists:
+            raise IngestionValidationError(
+                f"{source}: points must equal goals plus assists for player {row.get('playerId')}"
+            )
+    elif kind == "goalie":
+        shots = _number(row.get("shotsAgainst"), integer=True)
+        saves = _number(row.get("saves"), integer=True)
+        goals = _number(row.get("goalsAgainst"), integer=True)
+        if None not in (shots, saves, goals) and shots != saves + goals:
+            raise IngestionValidationError(
+                f"{source}: shotsAgainst must equal saves plus goalsAgainst for player {row.get('playerId')}"
+            )
+
 
 def validate_and_deduplicate_rows(
     rows: Iterable[dict[str, Any]],
@@ -68,6 +111,8 @@ def validate_and_deduplicate_rows(
     grain_fields: Iterable[str],
     season_field: str = "season",
     expected_seasons: Iterable[int] | None = None,
+    integer_fields: Iterable[str] = (),
+    numeric_fields: Iterable[str] = (),
 ) -> tuple[list[dict[str, Any]], DataQualityReport]:
     """Validate required values and return one last-write-wins row per grain.
 
@@ -80,6 +125,8 @@ def validate_and_deduplicate_rows(
 
     required = tuple(required_fields)
     grain = tuple(grain_fields)
+    integers = set(integer_fields)
+    numerics = set(numeric_fields) | integers
     available = set().union(*(row.keys() for row in materialized))
     missing_columns = sorted(set(required) - available)
     if missing_columns:
@@ -101,6 +148,21 @@ def validate_and_deduplicate_rows(
                 f"{source}: row {line_number} has null required fields: "
                 f"{', '.join(missing_values)}"
             )
+        for field in numerics:
+            value = row.get(field)
+            if value in (None, "", "NA", "N/A"):
+                continue
+            try:
+                parsed = Decimal(str(value))
+            except (InvalidOperation, ValueError, TypeError):
+                parsed = Decimal("NaN")
+            if not parsed.is_finite() or (
+                field in integers and parsed != parsed.to_integral_value()
+            ):
+                expected_type = "integer" if field in integers else "number"
+                raise IngestionValidationError(
+                    f"{source}: row {line_number} field {field} must be a finite {expected_type}"
+                )
         raw_season = row.get(season_field)
         try:
             parsed_season = Decimal(str(raw_season))
@@ -190,6 +252,16 @@ def _number(value: Any, integer: bool = False) -> int | float | None:
         return int(number) if integer else float(number)
     except (InvalidOperation, ValueError, TypeError):
         return None
+
+
+def _strict_integer(value: Any) -> int | None:
+    try:
+        parsed = Decimal(str(value))
+        if parsed.is_finite() and parsed == parsed.to_integral_value():
+            return int(parsed)
+    except (InvalidOperation, ValueError, TypeError):
+        pass
+    return None
 
 
 def _money_cents(value: Any) -> int | None:
@@ -355,16 +427,40 @@ def _download_csv(session: requests.Session, url: str) -> list[dict[str, str]]:
     return _parse_csv(response.text, source=url)
 
 
-def ingest_moneypuck(session: requests.Session) -> dict[str, int]:
+@tracked_ingestion("moneypuck")
+def ingest_moneypuck(
+    session: requests.Session,
+    *,
+    expected_seasons: Iterable[int] = range(2008, 2026),
+    minimum_rows_per_kind: int = 100,
+    maximum_duplicate_ratio: float = 0.01,
+) -> dict[str, int | str]:
     frames = {}
+    quality_reports = {}
     for kind in ("skater", "goalie"):
         rows = _read_csv(MONEYPUCK_FILES[kind]) + _download_csv(session, MONEYPUCK_URLS[kind])
         frames[kind], report = validate_and_deduplicate_rows(
             rows,
             source=f"MoneyPuck {kind}",
-            required_fields=("playerId", "season", "name", "situation"),
+            required_fields=(
+                "playerId", "season", "name", "situation", "games_played", "icetime"
+            ),
             grain_fields=("playerId", "season", "team", "situation"),
+            expected_seasons=expected_seasons,
+            integer_fields=("playerId", "season", "games_played"),
+            numeric_fields=("icetime",),
         )
+        quality_reports[kind] = report
+        enforce_quality_thresholds(
+            report,
+            minimum_rows=minimum_rows_per_kind,
+            maximum_duplicate_ratio=maximum_duplicate_ratio,
+        )
+        for row in frames[kind]:
+            if _strict_integer(row["games_played"]) < 0 or _number(row["icetime"]) < 0:
+                raise IngestionValidationError(
+                    f"MoneyPuck {kind}: games_played and icetime must be nonnegative"
+                )
         if report.duplicate_records:
             LOGGER.info(
                 "%s duplicate rows collapsed for %s",
@@ -395,6 +491,7 @@ def ingest_moneypuck(session: requests.Session) -> dict[str, int]:
             )
 
         counts = {}
+        records_created = records_updated = 0
         for kind, rows in frames.items():
             values_by_grain = {}
             for row in rows:
@@ -462,6 +559,8 @@ def ingest_moneypuck(session: requests.Session) -> dict[str, int]:
             update_columns = ",".join(
                 f"{name}=EXCLUDED.{name}" for name in mutable_columns
             )
+            cursor.execute(f"SELECT count(*) FROM {table} WHERE source_id=%s", (source_id,))
+            before_count = cursor.fetchone()[0]
             execute_values(
                 cursor,
                 f"""INSERT INTO {table} ({columns}) VALUES %s
@@ -471,13 +570,31 @@ def ingest_moneypuck(session: requests.Session) -> dict[str, int]:
                 values,
                 page_size=1000,
             )
+            cursor.execute(f"SELECT count(*) FROM {table} WHERE source_id=%s", (source_id,))
+            created = cursor.fetchone()[0] - before_count
+            records_created += created
+            records_updated += len(values) - created
             counts[kind] = len(values)
         cursor.close()
     LOGGER.info("MoneyPuck loaded: players=%s skater_rows=%s goalie_rows=%s", len(player_ids), counts["skater"], counts["goalie"])
-    return {"players": len(player_ids), **counts}
+    return {
+        "players": len(player_ids),
+        **counts,
+        "records_read": sum(report.records_read for report in quality_reports.values()),
+        "records_created": records_created,
+        "records_updated": records_updated,
+        "records_skipped": sum(report.duplicate_records for report in quality_reports.values()),
+        "reconciliation_policy": RECONCILIATION_POLICY,
+    }
 
 
-def ingest_nhl_rosters(session: requests.Session) -> dict[str, int]:
+@tracked_ingestion("nhl")
+def ingest_nhl_rosters(
+    session: requests.Session,
+    *,
+    minimum_teams: int = 30,
+    minimum_active_players: int = 500,
+) -> dict[str, int]:
     standings = session.get("https://api-web.nhle.com/v1/standings/now", timeout=30).json().get("standings", [])
     teams = {}
     for row in standings:
@@ -487,11 +604,25 @@ def ingest_nhl_rosters(session: requests.Session) -> dict[str, int]:
                 "name": _default(row.get("teamName")),
                 "city": _default(row.get("placeName")),
             }
+    if len(teams) < minimum_teams:
+        raise IngestionValidationError(
+            f"NHL rosters: only {len(teams)} teams; minimum is {minimum_teams}"
+        )
     rosters = {}
     for abbreviation in teams:
         response = session.get(f"https://api-web.nhle.com/v1/roster/{abbreviation}/current", timeout=30)
         response.raise_for_status()
         rosters[abbreviation] = response.json()
+    roster_player_count = sum(
+        len(roster.get(group, []))
+        for roster in rosters.values()
+        for group in ("forwards", "defensemen", "goalies")
+    )
+    if roster_player_count < minimum_active_players:
+        raise IngestionValidationError(
+            f"NHL rosters: only {roster_player_count} players; "
+            f"minimum is {minimum_active_players}"
+        )
 
     with database_transaction() as connection:
         cursor = connection.cursor()
@@ -548,7 +679,17 @@ def _nhl_stats_pages(session: requests.Session, endpoint: str, season: int, game
             timeout=30,
         )
         response.raise_for_status()
-        page = response.json().get("data", [])
+        payload = response.json()
+        page = payload.get("data", [])
+        if not isinstance(page, list):
+            raise IngestionValidationError(
+                f"NHL {endpoint} {season}/{game_type}: data must be a list"
+            )
+        for index, row in enumerate(page):
+            if not isinstance(row, dict) or row.get("playerId") in (None, ""):
+                raise IngestionValidationError(
+                    f"NHL {endpoint} {season}/{game_type}: row {index} is missing playerId"
+                )
         rows.extend(page)
         if len(page) < 100:
             break
@@ -556,7 +697,8 @@ def _nhl_stats_pages(session: requests.Session, endpoint: str, season: int, game
     return rows
 
 
-def ingest_nhl_stats(session: requests.Session, first_season: int = 2008, last_season: int = 2025) -> dict[str, int]:
+@tracked_ingestion("nhl")
+def ingest_nhl_stats(session: requests.Session, first_season: int = 2008, last_season: int = 2025) -> dict[str, int | str]:
     fetched = defaultdict(list)
     jobs = [(kind, season, game_type) for kind in ("skater", "goalie")
             for season in range(first_season, last_season + 1) for game_type in (2, 3)]
@@ -564,7 +706,34 @@ def ingest_nhl_stats(session: requests.Session, first_season: int = 2008, last_s
         futures = {executor.submit(_nhl_stats_pages, session, *job): job for job in jobs}
         for future in as_completed(futures):
             kind, season, game_type = futures[future]
-            fetched[kind].extend((season, game_type, row) for row in future.result())
+            page_rows = future.result()
+            if not page_rows:
+                raise IngestionValidationError(
+                    f"NHL {kind} stats are incomplete for {season}/{game_type}"
+                )
+            for row in page_rows:
+                required_stats = (
+                    ("gamesPlayed", "goals", "assists", "points")
+                    if kind == "skater"
+                    else ("gamesPlayed", "shotsAgainst", "saves", "goalsAgainst")
+                )
+                malformed = [
+                    field
+                    for field in required_stats
+                    if _strict_integer(row.get(field)) is None
+                    or _strict_integer(row.get(field)) < 0
+                ]
+                if malformed:
+                    raise IngestionValidationError(
+                        f"NHL {kind} {season}/{game_type}: nonnegative integer fields required: "
+                        + ", ".join(malformed)
+                    )
+                validate_stat_invariants(
+                    kind,
+                    row,
+                    source=f"NHL {kind} {season}/{game_type}",
+                )
+            fetched[kind].extend((season, game_type, row) for row in page_rows)
 
     with database_transaction() as connection:
         cursor = connection.cursor()
@@ -579,6 +748,7 @@ def ingest_nhl_stats(session: requests.Session, first_season: int = 2008, last_s
         team_ids = _ensure_teams(cursor, abbreviations)
         player_cache = {}
         counts = {}
+        records_created = records_updated = 0
         for kind, records in fetched.items():
             values_by_grain = {}
             for season, game_type, row in records:
@@ -637,14 +807,28 @@ def ingest_nhl_stats(session: requests.Session, first_season: int = 2008, last_s
                     saves=EXCLUDED.saves,save_percentage=EXCLUDED.save_percentage,
                     goals_against=EXCLUDED.goals_against,goals_against_average=EXCLUDED.goals_against_average,
                     shutouts=EXCLUDED.shutouts,time_on_ice_seconds=EXCLUDED.time_on_ice_seconds"""
+            cursor.execute(f"SELECT count(*) FROM {table} WHERE source_id=%s", (nhl_id,))
+            before_count = cursor.fetchone()[0]
             execute_values(cursor, f"""INSERT INTO {table} ({columns}) VALUES %s
                 ON CONFLICT (player_id,season_start_year,(COALESCE(team_id,0)),stat_scope,game_type,source_id)
                 DO UPDATE SET {update_columns},source_row_hash=EXCLUDED.source_row_hash,
                     updated_at=CURRENT_TIMESTAMP""", values, page_size=1000)
+            cursor.execute(f"SELECT count(*) FROM {table} WHERE source_id=%s", (nhl_id,))
+            created = cursor.fetchone()[0] - before_count
+            records_created += created
+            records_updated += len(values) - created
             counts[kind] = len(values)
         cursor.close()
     LOGGER.info("NHL stats loaded: skater_rows=%s goalie_rows=%s", counts["skater"], counts["goalie"])
-    return counts
+    records_read = sum(len(records) for records in fetched.values())
+    return {
+        **counts,
+        "records_read": records_read,
+        "records_created": records_created,
+        "records_updated": records_updated,
+        "records_skipped": records_read - sum(counts.values()),
+        "reconciliation_policy": RECONCILIATION_POLICY,
+    }
 
 
 def _capwages_active(
@@ -696,12 +880,17 @@ def _parse_capwages_players(
     return players
 
 
+@tracked_ingestion("capwages")
 def ingest_capwages(
-    session: requests.Session, *, minimum_players: int = 500
-) -> dict[str, int]:
+    session: requests.Session,
+    *,
+    minimum_players: int = 500,
+    minimum_profile_success_ratio: float = 0.98,
+) -> dict[str, int | str]:
     active = _capwages_active(session, minimum_rows=minimum_players)
     players = _parse_capwages_players(active, minimum_rows=minimum_players)
     contracts_by_slug = {}
+    profile_failures = []
     with ThreadPoolExecutor(max_workers=10) as executor:
         futures = {executor.submit(_capwages_contracts, session, item["slug"]): item["slug"] for item in players}
         for future in as_completed(futures):
@@ -710,7 +899,13 @@ def ingest_capwages(
                 contracts_by_slug[slug] = future.result()
             except requests.RequestException as exc:
                 LOGGER.warning("CapWages profile unavailable for %s: %s", slug, exc)
-                contracts_by_slug[slug] = []
+                profile_failures.append(slug)
+    success_ratio = (len(players) - len(profile_failures)) / len(players)
+    if success_ratio < minimum_profile_success_ratio:
+        raise IngestionValidationError(
+            f"CapWages profile success ratio {success_ratio:.2%} is below "
+            f"{minimum_profile_success_ratio:.2%}; refusing partial refresh"
+        )
 
     with database_transaction() as connection:
         cursor = connection.cursor()
@@ -735,6 +930,7 @@ def ingest_capwages(
         for player_id, first, last in cursor.fetchall():
             by_name[(first, last)].append(player_id)
         contract_count = season_count = 0
+        contract_created_count = season_created_count = 0
         for item in players:
             first, last = _split_name(item["name"])
             matches = by_name.get((first.lower(), last.lower()), [])
@@ -757,8 +953,20 @@ def ingest_capwages(
                         years.append(int(match.group(1)))
                 if not years:
                     continue
+                unique_years = sorted(set(years))
+                if len(unique_years) != len(years) or unique_years != list(
+                    range(unique_years[0], unique_years[-1] + 1)
+                ):
+                    raise IngestionValidationError(
+                        f"CapWages contract {item['slug']} has duplicate or non-contiguous seasons"
+                    )
                 start, end = min(years), max(years)
                 external_id = f"{item['slug']}:{start}:{end}:{index}"
+                cursor.execute(
+                    "SELECT 1 FROM contracts WHERE source_id=%s AND external_id=%s",
+                    (capwages_id, external_id),
+                )
+                contract_existed = cursor.fetchone() is not None
                 total_cents = _money_cents(contract.get("value"))
                 average_cents = _money_cents(details[0].get("capHit"))
                 expiry = str(contract.get("expiryStatus") or "").upper()
@@ -781,15 +989,30 @@ def ingest_capwages(
                 )
                 contract_id = cursor.fetchone()[0]
                 contract_count += 1
+                contract_created_count += int(not contract_existed)
                 for detail in details:
                     match = re.match(r"(\d{4})", str(detail.get("season") or ""))
                     if not match:
                         continue
                     year = int(match.group(1))
-                    cap_hit = _money_cents(detail.get("capHit")) or 0
+                    cap_hit = _money_cents(detail.get("capHit"))
+                    if cap_hit is None or cap_hit < 0:
+                        raise IngestionValidationError(
+                            f"CapWages contract {external_id} has an invalid cap hit"
+                        )
                     cursor.execute("SELECT salary_cap_cents FROM seasons WHERE start_year=%s", (year,))
                     cap_row = cursor.fetchone()
                     cap_pct = Decimal(cap_hit) / cap_row[0] if cap_row and cap_row[0] else None
+                    if cap_pct is not None and cap_pct > 1:
+                        raise IngestionValidationError(
+                            f"CapWages contract {external_id} exceeds the season salary cap"
+                        )
+                    cursor.execute(
+                        """SELECT 1 FROM contract_seasons
+                           WHERE contract_id=%s AND season_start_year=%s""",
+                        (contract_id, year),
+                    )
+                    season_existed = cursor.fetchone() is not None
                     cursor.execute(
                         """INSERT INTO contract_seasons (contract_id,season_start_year,owning_team_id,cap_hit_cents,cap_percentage,is_slide)
                            VALUES (%s,%s,%s,%s,%s,%s) ON CONFLICT (contract_id,season_start_year) DO UPDATE SET
@@ -800,9 +1023,21 @@ def ingest_capwages(
                          "slide" in str(detail.get("type") or "").lower()),
                     )
                     season_count += 1
+                    season_created_count += int(not season_existed)
         cursor.close()
     LOGGER.info("CapWages loaded: active_players=%s contracts=%s contract_seasons=%s", len(players), contract_count, season_count)
-    return {"players": len(players), "contracts": contract_count, "contract_seasons": season_count}
+    records_created = contract_created_count + season_created_count
+    return {
+        "players": len(players),
+        "contracts": contract_count,
+        "contract_seasons": season_count,
+        "profile_failures": len(profile_failures),
+        "records_read": len(players) + contract_count + season_count,
+        "records_created": records_created,
+        "records_updated": contract_count + season_count - records_created,
+        "records_skipped": len(profile_failures),
+        "reconciliation_policy": RECONCILIATION_POLICY,
+    }
 
 
 def existing_capwages_summary() -> dict[str, int]:
@@ -831,9 +1066,13 @@ def existing_capwages_summary() -> dict[str, int]:
     }
 
 
-def ingest_schedule(session: requests.Session, season: int = 2026) -> dict[str, int]:
+@tracked_ingestion("nhl")
+def ingest_schedule(
+    session: requests.Session, season: int = 2026, *, minimum_games: int = 100
+) -> dict[str, int | str]:
     cursor_date = f"{season}-10-01"
     games = {}
+    records_read = 0
     while cursor_date:
         response = session.get(f"https://api-web.nhle.com/v1/schedule/{cursor_date}", timeout=30)
         response.raise_for_status()
@@ -841,14 +1080,34 @@ def ingest_schedule(session: requests.Session, season: int = 2026) -> dict[str, 
         for day in payload.get("gameWeek", []):
             for game in day.get("games", []):
                 if game.get("gameType") == 2:
+                    records_read += 1
+                    required_paths = (
+                        game.get("id"),
+                        day.get("date"),
+                        (game.get("awayTeam") or {}).get("abbrev"),
+                        (game.get("homeTeam") or {}).get("abbrev"),
+                    )
+                    if any(value in (None, "") for value in required_paths):
+                        raise IngestionValidationError(
+                            f"NHL schedule {season}: regular-season game is missing required fields"
+                        )
                     game["_game_date"] = day["date"]
                     games[game["id"]] = game
         next_date = payload.get("nextStartDate")
         if not next_date or next_date <= cursor_date or next_date[:4] > str(season + 1):
             break
         cursor_date = next_date
+    if len(games) < minimum_games:
+        raise IngestionValidationError(
+            f"NHL schedule {season}: only {len(games)} games; minimum is {minimum_games}"
+        )
     with database_transaction() as connection:
         cursor = connection.cursor()
+        cursor.execute(
+            "SELECT count(*) FROM games WHERE nhl_game_id = ANY(%s)",
+            (list(games),),
+        )
+        incoming_before = cursor.fetchone()[0]
         abbreviations = [game[side]["abbrev"] for game in games.values() for side in ("awayTeam", "homeTeam")]
         team_ids = _ensure_teams(cursor, abbreviations)
         for game in games.values():
@@ -866,10 +1125,18 @@ def ingest_schedule(session: requests.Session, season: int = 2026) -> dict[str, 
             )
         cursor.close()
     LOGGER.info("NHL schedule loaded: games=%s", len(games))
-    return {"games": len(games)}
+    records_created = len(games) - incoming_before
+    return {
+        "games": len(games),
+        "records_read": records_read,
+        "records_created": records_created,
+        "records_updated": len(games) - records_created,
+        "records_skipped": records_read - len(games),
+        "reconciliation_policy": RECONCILIATION_POLICY,
+    }
 
 
-def run_all() -> dict[str, dict[str, int]]:
+def run_all() -> dict[str, dict[str, Any]]:
     init_db()
     session = http_session()
     results = {}

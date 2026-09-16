@@ -98,6 +98,20 @@ docker build -t tradevalue-api backend
 docker run --rm -p 8000:8000 --env-file backend/.env tradevalue-api
 ```
 
+Required CI builds this exact Dockerfile, starts the resulting image as a
+non-root user against the disposable PostgreSQL service, waits for readiness,
+and calls `/api/health`, `/api/seasons`, and `/api/teams` over the published
+port. Container logs are printed automatically when the smoke check fails. The
+request-serving image excludes ingestion code and its large local source data;
+loaders run separately from a trusted environment.
+
+The supported ingestion commands are documented in
+`app/ScriptingFiles/FullDataScript/README.md`. CI compiles the complete backend
+application and imports every supported ingestion module in a fresh interpreter
+before running the database-backed suite. Obsolete ORM-based loaders are
+retained under `legacy_loaders/` as non-executable recovery references; they are
+not substitutes for PostgreSQL backups.
+
 Production must provide `ENV=nonprod` or `ENV=prod`, a corresponding database
 URL, and the deployed frontend origin in `CORS_ORIGINS`. Apply schema changes as
 a separate release step; the API never mutates the schema on startup.

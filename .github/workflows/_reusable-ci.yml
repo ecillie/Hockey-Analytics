@@ -62,6 +62,8 @@ jobs:
             ml/requirements.txt
       - name: Install backend dependencies
         run: python -m pip install -r backend/requirements-dev.txt
+      - name: Compile and import supported backend entrypoints
+        run: PYTHONPATH=backend pytest --no-cov -q backend/tests/test_supported_entrypoints.py
       - name: Validate linear migration history
         run: python backend/database/verify_migrations.py
       - name: Generate reviewable migration SQL
@@ -91,6 +93,32 @@ jobs:
         run: PYTHONPATH=backend pytest -q
       - name: Enforce complete service-layer coverage
         run: python -m coverage report --include=backend/app/api/service.py --fail-under=100
+      - name: Build backend container artifact
+        run: docker build --tag "tradevalue-api:${{ github.sha }}" backend
+      - name: Start and smoke-test backend container artifact
+        env:
+          IMAGE_NAME: tradevalue-api:${{ github.sha }}
+          CONTAINER_NAME: tradevalue-api-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          set -euo pipefail
+          cleanup() {
+            exit_code=$?
+            if [ "$exit_code" -ne 0 ]; then
+              docker logs "$CONTAINER_NAME" || true
+            fi
+            docker rm --force "$CONTAINER_NAME" >/dev/null 2>&1 || true
+            exit "$exit_code"
+          }
+          trap cleanup EXIT
+          docker run --detach \
+            --name "$CONTAINER_NAME" \
+            --add-host host.docker.internal:host-gateway \
+            --publish 8000:8000 \
+            --env ENV=dev \
+            --env DATABASE_URL=postgresql://postgres:postgres@host.docker.internal:5432/tradevalue_test \
+            --env CORS_ORIGINS=http://localhost:5173 \
+            "$IMAGE_NAME"
+          python backend/database/container_smoke.py
       - name: Upload Python coverage reports
         if: ${{ always() }}
         uses: actions/upload-artifact@v4

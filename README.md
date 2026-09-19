@@ -87,10 +87,11 @@ For production, follow the complete
 
 ## Database
 
-The PostgreSQL schema is located at:
+The frozen initial PostgreSQL schema and versioned migrations are located at:
 
 ```text
 backend/database/schema.sql
+backend/migrations/versions/
 ```
 
 Install the development dependencies, copy the environment template, and enter your local
@@ -101,12 +102,14 @@ python -m pip install -r backend/requirements-dev.txt
 cp backend/.env.example backend/.env
 ```
 
-Apply `backend/database/schema.sql` manually before running a loader. The
+Run `python -m alembic -c backend/alembic.ini upgrade head` before a loader. The
 application uses `ENV=dev`, `ENV=nonprod`, or `ENV=prod` to select its database
 configuration. Development can use the individual `DB_*` values. Nonprod and
 prod use `DATABASE_URL` or their scoped `NONPROD_DATABASE_URL` /
 `PROD_DATABASE_URL` value supplied by the deployment environment. The
-application does not create the schema automatically.
+application does not create or migrate the schema automatically. See
+`backend/database/README.md` for migration creation, catalog snapshots, existing
+database adoption, and the production release gate.
 
 ## Running the Data Collection
 
@@ -137,6 +140,14 @@ Run tests with:
 PYTHONPATH=backend pytest
 ```
 
+The backend OpenAPI document and frontend TypeScript contract are committed so
+contract drift fails CI. After an intentional API change, regenerate both:
+
+```bash
+python backend/export_openapi.py
+cd frontend && npm run api:generate
+```
+
 The repository targets Python 3.12 and Node.js 24. Python installs use the
 checked-in constraints files, and `npm ci` uses the frontend lockfile. To
 regenerate the Python locks after changing a direct dependency, install
@@ -144,6 +155,7 @@ regenerate the Python locks after changing a direct dependency, install
 
 ```bash
 uv pip compile backend/requirements.in --python-version 3.12 --universal --no-annotate --output-file backend/requirements.txt
+uv pip compile backend/requirements.txt --python-version 3.12 --universal --no-annotate --output-file backend/constraints.txt
 uv pip compile backend/requirements-dev.txt --python-version 3.12 --universal --no-annotate --output-file constraints.txt
 ```
 
@@ -151,8 +163,9 @@ Python tests enforce branch coverage and write HTML/XML/LCOV reports under
 `coverage/python/`. Frontend coverage is enforced with
 `cd frontend && npm run test:coverage`, which writes HTML, Cobertura XML, and
 LCOV reports under `frontend/coverage/`. CI uploads both report directories.
-The initial Python 3.12 baseline is 46.94% branch-aware aggregate coverage
-(48.95% lines and 33.33% branches). The frontend baseline is 74.04% statements,
+The Python 3.12 regression floor is 58.80% branch-aware aggregate coverage.
+`TradeValueService` has a separate 100% line-and-branch coverage gate, while
+PostgreSQL-backed CI exercises the real query paths. The frontend baseline is 74.04% statements,
 61.95% branches, 65.55% functions, and 77.35% lines. These exact floors prevent
 coverage regressions and should be raised as each subsystem gains tests.
 

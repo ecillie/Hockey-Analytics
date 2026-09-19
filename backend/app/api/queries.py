@@ -137,8 +137,10 @@ summary AS (
         pj.projected_hockey_value,
         CASE WHEN a.game_score_per_60 IS NOT NULL AND r.replacement_gs60 IS NOT NULL
              THEN a.game_score_per_60 - r.replacement_gs60 END gs60_above_replacement,
-        COALESCE(pj.model_version, (SELECT version FROM active_model),
-                 CASE WHEN a.game_score_per_60 IS NOT NULL THEN 'replacement-level-v1' END) model_version,
+        CASE WHEN pj.model_version IS NOT NULL THEN pj.model_version
+             WHEN a.game_score_per_60 IS NOT NULL
+             THEN COALESCE((SELECT version FROM active_model), 'replacement-level-v1')
+        END model_version,
         ch.cap_hit_cents
     FROM players p
     LEFT JOIN team_choice tc ON tc.player_id = p.id

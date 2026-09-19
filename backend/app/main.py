@@ -7,6 +7,7 @@ import logging
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -60,6 +61,24 @@ def create_app() -> FastAPI:
         return _error(500, "INTERNAL_ERROR", "The API could not complete this request.")
 
     application.include_router(router)
+
+    def contract_schema():
+        if application.openapi_schema is None:
+            schema = get_openapi(
+                title=application.title,
+                version=application.version,
+                routes=application.routes,
+            )
+            # RequestValidationError is translated to the shared 400 envelope,
+            # so FastAPI's default 422 documentation would be incorrect.
+            for path in schema["paths"].values():
+                for operation in path.values():
+                    if isinstance(operation, dict):
+                        operation.get("responses", {}).pop("422", None)
+            application.openapi_schema = schema
+        return application.openapi_schema
+
+    application.openapi = contract_schema
     return application
 
 

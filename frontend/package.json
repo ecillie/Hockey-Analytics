@@ -9,6 +9,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "api:generate": "openapi-typescript ../docs/openapi.json -o src/api/generated.ts --alphabetize",
+    "api:contract": "openapi-typescript ../docs/openapi.json -o src/api/generated.ts --alphabetize --check",
     "lint": "eslint .",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
@@ -35,6 +37,7 @@
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
     "jsdom": "^27.2.0",
+    "openapi-typescript": "7.10.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.4",
     "vite": "7.2.4",

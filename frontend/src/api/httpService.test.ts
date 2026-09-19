@@ -1,14 +1,30 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { API_GET_PATHS } from './contract'
 import { httpApi } from './httpService'
 
-describe('httpApi route mapping', () => {
+function contractPath(url: string) {
+  return new URL(url).pathname
+    .replace(/^\/api\/players\/\d+/, '/api/players/{player_id}')
+    .replace(/^\/api\/teams\/\d+/, '/api/teams/{team_id}')
+}
+
+describe('HTTP API contract', () => {
   afterEach(() => vi.restoreAllMocks())
 
-  it('maps every service method to its HTTP endpoint', async () => {
+  it('maps every FastAPI endpoint and serializes representative query parameters', async () => {
     const fetchMock = vi.spyOn(globalThis, 'fetch').mockImplementation(async (input) => {
       const url = String(input)
-      const body = url.includes('/contract') ? null : url.includes('/compare') ? { season: 2025, players: [] } : url.includes('/players') ? [] : {}
-      return new Response(JSON.stringify(body), { status: 200, headers: { 'content-type': 'application/json' } })
+      const body = url.includes('/contract')
+        ? null
+        : url.includes('/compare')
+          ? { season: 2025, players: [] }
+          : url.includes('/players')
+            ? []
+            : {}
+      return new Response(JSON.stringify(body), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      })
     })
     const signal = new AbortController().signal
 
@@ -34,6 +50,8 @@ describe('httpApi route mapping', () => {
     await httpApi.comparePlayers([101, 102], 2025, signal)
 
     const urls = fetchMock.mock.calls.map(([input]) => String(input))
+    const calledPaths = urls.map(contractPath)
+    expect([...new Set(calledPaths)].sort()).toEqual([...API_GET_PATHS].sort())
     expect(urls).toEqual(expect.arrayContaining([
       'http://localhost:8000/api/health',
       'http://localhost:8000/api/players?team=EDM',

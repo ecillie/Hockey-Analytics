@@ -140,6 +140,14 @@ Run tests with:
 PYTHONPATH=backend pytest
 ```
 
+The backend OpenAPI document and frontend TypeScript contract are committed so
+contract drift fails CI. After an intentional API change, regenerate both:
+
+```bash
+python backend/export_openapi.py
+cd frontend && npm run api:generate
+```
+
 The repository targets Python 3.12 and Node.js 24. Python installs use the
 checked-in constraints files, and `npm ci` uses the frontend lockfile. To
 regenerate the Python locks after changing a direct dependency, install

@@ -1,244 +1,51 @@
-export type RosterStatus = 'ACTIVE' | 'MINORS' | 'LTIR' | 'UNKNOWN'
-export type Position = 'C' | 'LW' | 'RW' | 'D' | 'G' | 'F'
-export type SortOrder = 'asc' | 'desc'
-export type PlayerSort = 'name' | 'team' | 'gamesPlayed' | 'goals' | 'assists' | 'points' | 'gameScore' | 'gameScorePer60' | 'hockeyValue' | 'capHitCents'
+import type { components, operations } from './generated'
 
-export interface ApiErrorBody {
-  error: { code: string; message: string; details?: Record<string, string[]> }
-}
+type Schemas = components['schemas']
 
-export interface Pagination {
-  page: number
-  pageSize: number
-  totalItems: number
-  totalPages: number
-}
+// Runtime API models come directly from FastAPI's generated OpenAPI schema.
+// `npm run api:contract` fails when either the backend schema or this generated
+// TypeScript contract is stale.
+export type RosterStatus = Schemas['RosterStatus']
+export type Position = Schemas['Position']
+export type ApiErrorBody = Schemas['ErrorResponse']
+export type Pagination = Schemas['Pagination']
+export type TeamSummary = Schemas['TeamSummary']
+export type Team = Schemas['Team']
+export type PlayerIdentity = Schemas['PlayerIdentity']
+export type PlayerSummary = Schemas['PlayerSummary']
+export type TraditionalSkaterStats = Schemas['TraditionalSkaterStats']
+export type AdvancedSkaterStats = Schemas['AdvancedSkaterStats']
+export type GoalieStats = Schemas['GoalieStats']
+export type PlayerStats = Schemas['PlayerStats']
+export type SeasonHistoryRow = Schemas['SeasonHistoryRow']
+export type HockeyValue = Schemas['HockeyValue']
+export type HockeyValueHistoryPoint = Schemas['HockeyValueHistoryPoint']
+export type ContractSeason = Schemas['ContractSeason']
+export type Contract = Schemas['Contract']
+export type TeamRosterResponse = Schemas['TeamRosterResponse']
+export type TeamContractsResponse = Schemas['TeamContractsResponse']
+export type TeamCap = Schemas['TeamCap']
+export type SeasonInfo = Schemas['SeasonInfo']
+export type SearchResponse = Schemas['SearchResponse']
+export type OverviewResponse = Schemas['OverviewResponse']
+export type CompareResponse = Schemas['CompareResponse']
+export type HealthResponse = Schemas['HealthResponse']
 
-export interface PaginatedResponse<T> {
+export type PaginatedResponse<T> = Omit<Schemas['PaginatedPlayers'], 'data'> & {
   data: T[]
-  pagination: Pagination
 }
 
-export interface TeamSummary {
-  id: number
-  nhlTeamId: number | null
-  abbreviation: string
-  name: string
-  city: string | null
-  active: boolean
+type GeneratedPlayerFilters = NonNullable<
+  operations['players_api_players_get']['parameters']['query']
+>
+export type PlayerFilters = {
+  [Key in keyof GeneratedPlayerFilters]: Exclude<GeneratedPlayerFilters[Key], null>
 }
-
-export interface Team extends TeamSummary {
-  rosterCounts: Record<RosterStatus, number>
-}
-
-export interface PlayerIdentity {
-  id: number
-  firstName: string
-  lastName: string
-  fullName: string
-  birthDate: string | null
-  age: number | null
-  primaryPosition: Position | null
-  shootsCatches: 'L' | 'R' | null
-  nationality: string | null
-  active: boolean
-  rosterStatus: RosterStatus
-  team: TeamSummary | null
-}
-
-export interface PlayerSummary extends PlayerIdentity {
-  season: number
-  gamesPlayed: number | null
-  goals: number | null
-  assists: number | null
-  points: number | null
-  toiSeconds: number | null
-  gameScore: number | null
-  gameScorePer60: number | null
-  hockeyValue: number | null
-  projectedNextSeasonHockeyValue: number | null
-  capHitCents: number | null
-}
-
-export interface TraditionalSkaterStats {
-  gamesPlayed: number | null
-  goals: number | null
-  assists: number | null
-  points: number | null
-  plusMinus: number | null
-  penaltyMinutes: number | null
-  powerPlayGoals: number | null
-  powerPlayPoints: number | null
-  shortHandedGoals: number | null
-  shots: number | null
-  shootingPercentage: number | null
-}
-
-export interface AdvancedSkaterStats {
-  situation: string
-  iceTimeSeconds: number | null
-  shifts: number | null
-  gameScore: number | null
-  gameScorePer60: number | null
-  individualExpectedGoals: number | null
-  expectedGoalsPer60: number | null
-  onIceExpectedGoalsPercentage: number | null
-  takeaways: number | null
-  giveaways: number | null
-  shotsBlocked: number | null
-  penalties: number | null
-  penaltiesDrawn: number | null
-}
-
-export interface GoalieStats {
-  gamesPlayed: number | null
-  wins: number | null
-  losses: number | null
-  overtimeLosses: number | null
-  shotsAgainst: number | null
-  saves: number | null
-  savePercentage: number | null
-  goalsAgainstAverage: number | null
-  shutouts: number | null
-  timeOnIceSeconds: number | null
-  expectedGoalsAgainst: number | null
-  goalsSavedAboveExpected: number | null
-}
-
-export interface PlayerStats {
-  playerId: number
-  season: number
-  team: TeamSummary | null
-  traditional: TraditionalSkaterStats | null
-  advanced: AdvancedSkaterStats | null
-  goalie: GoalieStats | null
-}
-
-export interface SeasonHistoryRow {
-  season: number
-  team: TeamSummary | null
-  gamesPlayed: number | null
-  goals: number | null
-  assists: number | null
-  points: number | null
-  gameScorePer60: number | null
-  hockeyValue: number | null
-}
-
-export interface HockeyValue {
-  playerId: number
-  season: number
-  hockeyValue: number | null
-  projectedNextSeasonHockeyValue: number | null
-  gameScorePer60AboveReplacement: number | null
-  toiHours: number | null
-  modelVersion: string | null
-}
-
-export interface HockeyValueHistoryPoint {
-  season: number
-  hockeyValue: number | null
-}
-
-export interface ContractSeason {
-  season: number
-  owningTeam: TeamSummary | null
-  baseSalaryCents: number | null
-  signingBonusCents: number | null
-  performanceBonusCents: number | null
-  totalCashCents: number | null
-  capHitCents: number
-  capPercentage: number | null
-  isSlide: boolean
-}
-
-export interface Contract {
-  id: number
-  playerId: number
-  signingTeam: TeamSummary | null
-  signedOn: string | null
-  startSeason: number
-  endSeason: number
-  termYears: number
-  contractType: string | null
-  expiryStatus: 'RFA' | 'UFA' | null
-  totalValueCents: number | null
-  averageValueCents: number | null
-  isEntryLevel: boolean
-  seasons: ContractSeason[]
-}
-
-export interface TeamRosterResponse {
-  team: TeamSummary
-  season: number
-  status: RosterStatus | null
-  players: PlayerSummary[]
-}
-
-export interface TeamContractsResponse {
-  team: TeamSummary
-  season: number
-  contracts: Array<{ player: PlayerIdentity; contract: Contract; season: ContractSeason }>
-}
-
-export interface TeamCap {
-  teamId: number
-  season: number
-  salaryCapCents: number | null
-  activeRosterCapCents: number
-  ltirCapCents: number
-  minorsCapCents: number
-  totalCommitmentsCents: number
-  capSpaceCents: number | null
-  calculationStatus: 'ESTIMATE' | 'AUTHORITATIVE'
-}
-
-export interface SeasonInfo {
-  currentSeason: number
-  availableSeasons: Array<{ startYear: number; endYear: number; label: string; salaryCapCents: number | null }>
-}
-
-export interface PlayerFilters {
-  season?: number
-  team?: string
-  position?: Position
-  rosterStatus?: RosterStatus
-  search?: string
-  sort?: PlayerSort
-  order?: SortOrder
-  page?: number
-  pageSize?: number
-}
-
-export interface SearchResponse {
-  players: PlayerIdentity[]
-  teams: TeamSummary[]
-}
-
-export interface OverviewResponse {
-  season: number
-  league: { players: number; goals: number; gamesPlayed: number; averageHockeyValue: number | null }
-  leaders: {
-    hockeyValue: PlayerSummary[]
-    points: PlayerSummary[]
-    goals: PlayerSummary[]
-    gameScorePer60: PlayerSummary[]
-  }
-}
-
-export interface CompareResponse {
-  season: number
-  players: Array<{
-    player: PlayerIdentity
-    stats: PlayerStats
-    value: HockeyValue | null
-    contract: Contract | null
-  }>
-}
+export type SortOrder = NonNullable<PlayerFilters['order']>
+export type PlayerSort = NonNullable<PlayerFilters['sort']>
 
 export interface ApiService {
-  getHealth(signal?: AbortSignal): Promise<{ status: 'ok' }>
+  getHealth(signal?: AbortSignal): Promise<HealthResponse>
   getSeasons(signal?: AbortSignal): Promise<SeasonInfo>
   getOverview(season: number, signal?: AbortSignal): Promise<OverviewResponse>
   getPlayers(params?: PlayerFilters, signal?: AbortSignal): Promise<PaginatedResponse<PlayerSummary>>

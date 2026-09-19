@@ -17,6 +17,27 @@ from app.api.queries import (
 )
 
 
+def _buried_relief_cents(season: int) -> int:
+    """Return the CBA buryable amount for a one-way minor-league contract."""
+    if season < 2013:
+        return 0
+    if season < 2015:
+        minimum_salary_cents = 55_000_000
+    elif season < 2017:
+        minimum_salary_cents = 57_500_000
+    elif season < 2019:
+        minimum_salary_cents = 65_000_000
+    elif season < 2021:
+        minimum_salary_cents = 70_000_000
+    elif season < 2023:
+        minimum_salary_cents = 75_000_000
+    elif season < 2026:
+        minimum_salary_cents = 77_500_000
+    else:
+        minimum_salary_cents = 85_000_000
+    return minimum_salary_cents + 37_500_000
+
+
 class ApiProblem(Exception):
     def __init__(
         self,
@@ -379,11 +400,18 @@ class TradeValueService:
         row = self._one("""SELECT s.salary_cap_cents,
              COALESCE(SUM(cs.cap_hit_cents) FILTER (WHERE p.roster_status='ACTIVE'),0)::bigint active_cap,
              COALESCE(SUM(cs.cap_hit_cents) FILTER (WHERE p.roster_status='LTIR'),0)::bigint ltir_cap,
-             COALESCE(SUM(cs.cap_hit_cents) FILTER (WHERE p.roster_status='MINORS'),0)::bigint minors_cap,
-             COALESCE(SUM(cs.cap_hit_cents),0)::bigint total_cap
+             COALESCE(SUM(GREATEST(cs.cap_hit_cents - :buried_relief_cents, 0))
+                 FILTER (WHERE p.roster_status='MINORS'),0)::bigint minors_cap,
+             COALESCE(SUM(CASE WHEN p.roster_status='MINORS'
+                 THEN GREATEST(cs.cap_hit_cents - :buried_relief_cents, 0)
+                 ELSE cs.cap_hit_cents END),0)::bigint total_cap
            FROM seasons s LEFT JOIN contract_seasons cs ON cs.season_start_year=s.start_year AND cs.owning_team_id=:team_id
            LEFT JOIN contracts c ON c.id=cs.contract_id LEFT JOIN players p ON p.id=c.player_id
-           WHERE s.start_year=:season GROUP BY s.salary_cap_cents""", {"team_id": team_id, "season": season})
+           WHERE s.start_year=:season GROUP BY s.salary_cap_cents""", {
+               "team_id": team_id,
+               "season": season,
+               "buried_relief_cents": _buried_relief_cents(season),
+           })
         ceiling = row["salary_cap_cents"]
         return {"teamId": team_id, "season": season, "salaryCapCents": ceiling, "activeRosterCapCents": row["active_cap"],
                 "ltirCapCents": row["ltir_cap"], "minorsCapCents": row["minors_cap"], "totalCommitmentsCents": row["total_cap"],

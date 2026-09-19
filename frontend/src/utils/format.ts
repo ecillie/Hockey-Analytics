@@ -1,6 +1,6 @@
 export const formatCurrency = (cents: number | null | undefined, compact = false) => {
   if (cents == null) return '—'
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: compact ? 'compact' : 'standard', maximumFractionDigits: compact ? 2 : 0 }).format(cents / 100)
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: compact ? 'compact' : 'standard', minimumFractionDigits: compact ? 2 : 0, maximumFractionDigits: compact ? 2 : 0 }).format(cents / 100)
 }
 export const formatNumber = (value: number | null | undefined, digits = 0) => value == null ? '—' : value.toFixed(digits)
 export const formatPercent = (value: number | null | undefined, digits = 1) => value == null ? '—' : `${(value * 100).toFixed(digits)}%`

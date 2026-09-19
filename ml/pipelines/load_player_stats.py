@@ -13,8 +13,6 @@ BACKEND_DIR = REPO_ROOT / "backend"
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
-from app.database import engine  # noqa: E402
-
 
 PLAYER_SEASON_QUERY = text("""
 WITH basic_total AS (
@@ -294,6 +292,10 @@ def load_player_stats(
 
     Contract data is intentionally excluded.
     """
+
+    # Keep database configuration out of module import so feature-building code
+    # can be imported and tested without deployment credentials.
+    from app.database import engine
 
     with engine.connect() as connection:
         df = pd.read_sql(

@@ -96,15 +96,16 @@ replacement AS (
     GROUP BY e.position_group
 ),
 active_model AS (
-    SELECT version FROM model_versions
+    SELECT id, version FROM model_versions
     WHERE active AND model_type IN ('skater_value', 'skater-value')
     ORDER BY created_at DESC LIMIT 1
 ),
 projection AS (
     SELECT DISTINCT ON (pr.player_id) pr.player_id,
         NULLIF(pr.input_features ->> 'predicted_hockey_value', '')::float projected_hockey_value,
-        mv.version model_version
-    FROM predictions pr JOIN model_versions mv ON mv.id = pr.model_version_id
+        am.version model_version
+    FROM predictions pr
+    JOIN active_model am ON am.id = pr.model_version_id
     WHERE pr.target_season = :season + 1
       AND pr.input_features ? 'predicted_hockey_value'
     ORDER BY pr.player_id, pr.created_at DESC

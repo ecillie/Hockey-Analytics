@@ -72,6 +72,11 @@ def build_features(
 
     features = df.copy()
 
+    if "position_group" not in features.columns and "position" in features.columns:
+        features["position_group"] = features["position"].map(
+            {"C": "forward", "LW": "forward", "RW": "forward", "F": "forward", "D": "defense"}
+        )
+
     # ---------------------------------------------------------
     # Ice-time / usage
     # ---------------------------------------------------------

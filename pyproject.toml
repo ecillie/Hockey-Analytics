@@ -1,5 +1,5 @@
 [tool.pytest.ini_options]
-addopts = "--cov=app --cov=ml --cov-branch --cov-report=term-missing --cov-report=html:coverage/python/html --cov-report=xml:coverage/python/coverage.xml --cov-report=lcov:coverage/python/lcov.info --cov-fail-under=46.94"
+addopts = "--cov=app --cov=ml --cov-branch --cov-report=term-missing --cov-report=html:coverage/python/html --cov-report=xml:coverage/python/coverage.xml --cov-report=lcov:coverage/python/lcov.info --cov-fail-under=58.80"
 testpaths = ["backend/tests", "ml/tests"]
 
 [tool.coverage.run]

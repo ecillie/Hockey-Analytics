@@ -1,7 +1,8 @@
 # TradeValue database
 
-The complete PostgreSQL definition for the revamped backend is in `schema.sql`.
-Run that file manually against an empty database to create the schema. It keeps
+The PostgreSQL schema is managed by Alembic. `schema.sql` is the frozen input to
+the initial migration and must not be edited; future changes belong in new
+files under `backend/migrations/versions`. The schema keeps
 player identity, performance statistics, and contracts independent. Application
 queries or ML dataset builders should join those timelines by player and season;
 statistics ingestion must not depend on a player having a contract row.
@@ -17,11 +18,8 @@ Conventions:
   durable ingestion key.
 - Raw source payloads and hashes go in `source_records` so imports are auditable
   and replayable.
-- `created_at` and `updated_at` are UTC-aware timestamps. The application or
-  future migration framework is responsible for updating `updated_at`.
-
-This directory is intentionally migration-tool agnostic. Once the initial schema
-has been deployed, future database changes should be introduced as migrations.
+- `created_at` and `updated_at` are UTC-aware timestamps. The application or a
+  migration is responsible for updating `updated_at`.
 
 ## Initial setup
 
@@ -44,13 +42,68 @@ scoped `NONPROD_DATABASE_URL` and `PROD_DATABASE_URL` variables. Scoped URLs tak
 precedence over the shared variable, preventing a local file containing several
 URLs from selecting the wrong database.
 
-Apply `backend/database/schema.sql` manually to an empty PostgreSQL database.
-The Python database module only connects to and verifies that schema; it does not
-create tables.
+Apply all migrations from the repository root:
+
+```bash
+python -m alembic -c backend/alembic.ini upgrade head
+python backend/database/schema_snapshot.py
+```
+
+The application does not create or migrate tables during startup.
+
+## Migration development
+
+Migration history must remain linear. Create a revision from the repository
+root, implement both directions, and validate it on a disposable PostgreSQL
+database:
+
+```bash
+python -m alembic -c backend/alembic.ini revision -m "describe the change"
+python backend/database/verify_migrations.py
+python -m alembic -c backend/alembic.ini upgrade head
+python backend/database/schema_snapshot.py --update
+python -m alembic -c backend/alembic.ini downgrade -1
+python -m alembic -c backend/alembic.ini upgrade head
+python backend/database/schema_snapshot.py
+```
+
+Review the `schema.snapshot.json` diff before committing it. The snapshot is
+generated from PostgreSQL catalogs and covers tables, columns, defaults,
+identity properties, constraints, indexes, and enums. This replaces Alembic
+autogeneration drift checks because the application intentionally uses reviewed
+SQL rather than complete ORM metadata.
+
+Migrations should be backward-compatible with the currently deployed API. Use
+expand/contract changes for renamed or removed objects and correct a released
+migration with a new forward revision—never edit an applied revision. CI proves
+that an empty database upgrades to head, a second upgrade is a no-op, the entire
+history can round-trip on disposable PostgreSQL, and the resulting catalog
+matches the committed snapshot. CI also publishes the offline upgrade SQL and
+actual catalog snapshots as migration diagnostics.
+
+## Adopting an existing database
+
+An existing database created from the original `schema.sql` has no
+`alembic_version` row. Back it up or create a Neon branch first, then verify that
+its catalog exactly matches the baseline before stamping it:
+
+```bash
+DATABASE_URL="$NEON_DIRECT_DATABASE_URL" \
+  python backend/database/schema_snapshot.py
+DATABASE_URL="$NEON_DIRECT_DATABASE_URL" \
+  python -m alembic -c backend/alembic.ini stamp 20260910_0001
+DATABASE_URL="$NEON_DIRECT_DATABASE_URL" \
+  python -m alembic -c backend/alembic.ini current --check-heads
+```
+
+Do not stamp a database when the snapshot comparison fails. Investigate and
+reconcile the drift first. The release workflow also runs a preflight that
+refuses to migrate application tables without an Alembic revision, preventing
+an accidental attempt to replay the baseline over an existing schema.
 
 ## Roster status
 
-`schema.sql` creates `players.roster_status` with these values:
+The initial migration creates `players.roster_status` with these values:
 
 - `ACTIVE`: positively found on a current NHL roster.
 - `MINORS`: positively found on a current AHL roster and the NHL roster fetch

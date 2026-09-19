@@ -13,12 +13,43 @@ TradeValue uses three environment workflows:
 
 All three call `_reusable-ci.yml`, so backend tests, ML tests, frontend lint,
 frontend tests, and the frontend production build use the same implementation.
+Frontend promotion requires 100% statement, branch, function, and line coverage
+for production runtime modules. CI publishes the HTML, JSON, LCOV, and Cobertura
+reports in the `frontend-coverage` artifact for release review and auditability.
+The backend job also verifies a linear Alembic history, upgrades an empty local
+PostgreSQL service, compares its catalog with the committed schema snapshot,
+tests a downgrade/re-upgrade cycle, runs API smoke checks, and uploads offline
+SQL plus catalog diagnostics.
 Each destination workflow owns the merge into its branch. Its merge job runs
 only after that environment's required aggregate job succeeds. GitHub
 auto-merge remains responsible for waiting on every other check required by the
 destination branch, including Vercel preview checks when those are configured
 as required. The Dev and NonProd push jobs only create the next promotion pull
 request; they do not merge it themselves.
+
+## Frontend release gate
+
+The frontend coverage thresholds live in `frontend/vite.config.ts` and must stay
+at 100% for statements, branches, functions, and lines. The measured scope
+includes application routing, API selection and transport, shared components,
+hooks, context, page behavior, formatting, error handling, and user
+interactions.
+
+The coverage denominator excludes only files that do not represent shipped
+runtime behavior: TypeScript-only declarations, the DOM bootstrap, test setup,
+and mock fixtures/services. The mock API remains directly covered by contract
+tests even though it is excluded from the production-runtime percentage.
+
+For every promotion candidate, confirm that:
+
+1. `Frontend tests and build` passes without lowering a threshold or adding a
+   production module to the exclusion list.
+2. The `frontend-coverage` artifact contains `index.html`,
+   `coverage-final.json`, `lcov.info`, and `cobertura-coverage.xml`.
+3. `npm run build` succeeds after the coverage gate, proving the tested source
+   also compiles into the production artifact.
+4. Any intentional behavior change includes interaction coverage for its
+   success, loading, empty, failure, and retry states where applicable.
 
 ## Repository settings
 
@@ -99,3 +130,18 @@ and [required-status-check documentation](https://docs.github.com/en/repositorie
 If a required job fails or is cancelled, the destination pull request remains
 open. Rerun the failed jobs or push a corrective commit; auto-merge resumes only
 after the destination workflow succeeds.
+
+## Database migration release gate
+
+Database changes are deliberately separate from Vercel application startup and
+the automatic branch cascade. Create GitHub Environments named `nonprod` and
+`prod`, add a direct Neon connection as the `DATABASE_URL` secret in each, and
+configure required reviewers on `prod`.
+
+Before releasing schema-dependent code, manually dispatch the `Database
+migration` workflow against `nonprod`, validate the application, and then
+dispatch it against `prod`. Per-environment concurrency prevents overlapping
+migration runs. The workflow records the starting and ending revision, applies
+`upgrade head`, verifies the exact schema contract, and smoke-tests health,
+seasons, and teams. Use pooled URLs only for the request-serving application;
+the migration workflow requires a direct Neon URL.

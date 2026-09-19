@@ -3,6 +3,7 @@ import unittest
 from unittest.mock import Mock
 
 from fastapi.testclient import TestClient
+from sqlalchemy.exc import OperationalError
 
 os.environ.setdefault("ENV", "dev")
 os.environ.setdefault("DATABASE_URL", "postgresql://example.test/tradevalue")
@@ -48,6 +49,9 @@ class StubService:
     def teams(self):
         return [TEAM]
 
+    def search(self, _query, _types, _limit):
+        return {"players": [], "teams": []}
+
     def compare(self, ids, season):
         raise AssertionError(f"valid comparison was not expected: {ids}, {season}")
 
@@ -78,6 +82,22 @@ class ApiContractTests(unittest.TestCase):
         self.assertEqual(response.json(), {"status": "ok"})
         self.stub.session.execute.assert_called_once()
 
+    def test_database_failure_uses_shared_503_error_envelope(self):
+        self.stub.session.execute.side_effect = OperationalError(
+            "SELECT 1", {}, Exception("database unavailable")
+        )
+        response = self.client.get("/api/health")
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(
+            response.json(),
+            {
+                "error": {
+                    "code": "DATABASE_UNAVAILABLE",
+                    "message": "The data service is temporarily unavailable.",
+                }
+            },
+        )
+
     def test_response_models_emit_camel_case_contract(self):
         response = self.client.get("/api/players?season=2025")
         self.assertEqual(response.status_code, 200)
@@ -94,6 +114,11 @@ class ApiContractTests(unittest.TestCase):
         response = self.client.get("/api/players/compare?ids=7,7&season=2025")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["error"]["code"], "INVALID_COMPARISON")
+
+    def test_search_rejects_whitespace_only_query(self):
+        response = self.client.get("/api/search", params={"q": "  "})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["error"]["code"], "INVALID_REQUEST")
 
     def test_cors_allows_local_frontend(self):
         response = self.client.options(

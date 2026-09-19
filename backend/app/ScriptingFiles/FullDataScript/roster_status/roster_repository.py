@@ -95,6 +95,11 @@ class PostgresRosterRepository:
         rows = list(matches)
         if not rows:
             return
+        source_query = """
+            INSERT INTO data_sources (code, display_name, base_url)
+            VALUES ('ahl', 'AHL', 'https://theahl.com')
+            ON CONFLICT (code) DO NOTHING
+        """
         query = """
             INSERT INTO player_external_ids (
                 player_id,
@@ -108,4 +113,5 @@ class PostgresRosterRepository:
             ON CONFLICT (source_id, external_id) DO NOTHING
         """
         with self.connection.cursor() as cursor:
+            cursor.execute(source_query)
             cursor.executemany(query, rows)

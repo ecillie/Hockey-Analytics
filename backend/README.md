@@ -1,7 +1,7 @@
 # TradeValue backend API
 
-The backend is a read-only FastAPI service backed by the PostgreSQL schema in
-`database/schema.sql`. It implements every route in `docs/api-contract.md`,
+The backend is a read-only FastAPI service backed by an Alembic-managed
+PostgreSQL schema. It implements every route in `docs/api-contract.md`,
 including player and team browsing, Hockey Value, contracts, cap estimates,
 search, overview aggregates, and comparison.
 
@@ -12,7 +12,7 @@ From the repository root:
 ```bash
 python -m pip install -r backend/requirements-dev.txt
 cp backend/.env.example backend/.env
-psql "$DATABASE_URL" -f backend/database/schema.sql
+python -m alembic -c backend/alembic.ini upgrade head
 cd backend
 uvicorn app.main:app --reload
 ```
@@ -54,9 +54,42 @@ origins. Do not use `*` when credentials are introduced later.
 PYTHONPATH=backend pytest -q backend/tests ml/tests
 ```
 
-HTTP tests replace the database service and verify response contracts,
-validation errors, route coverage, and CORS. A live smoke test still requires a
-populated PostgreSQL database.
+HTTP and service tests verify response contracts, validation errors, route
+coverage, CORS, and service-layer branching. PostgreSQL integration tests run
+when `TEST_DATABASE_URL` is set; the target database must be disposable because
+the tests truncate application tables. CI provisions a dedicated PostgreSQL
+service, migrates an empty database to Alembic head, verifies the catalog and a
+downgrade/re-upgrade cycle, then runs the integration suite automatically.
+
+The ingestion gate uses small checked-in MoneyPuck and CapWages-shaped fixtures;
+it never calls live NHL, MoneyPuck, or CapWages services. It validates source
+schemas and required values, season coverage, player/season/stat deduplication,
+idempotent typed-field upserts, salary-cap reference data, foreign-key behavior,
+and transaction rollback after a failed batch.
+
+Every schema-native ingestion stage records `running`, `succeeded`, `failed`, or
+`cancelled` state in `ingestion_runs`. PostgreSQL advisory locks reject a second
+copy of the same stage while one is active. Successful rows are upserted and
+source rows absent from a later snapshot are deliberately retained; loaders do
+not infer deletion from absence. MoneyPuck coverage, volume, and duplicate-ratio
+thresholds, NHL roster and schedule minimums, NHL stat invariants, and CapWages
+profile-success thresholds fail before writes. An incomplete roster feed rolls
+back the entire roster-status update.
+
+The production defaults expect MoneyPuck seasons 2008 through 2025, at least 30
+NHL teams, 500 active NHL players, 100 regular-season schedule games, and a 98%
+CapWages profile success rate. Tests override only the volume values so tiny
+fixtures exercise the identical validation and persistence paths.
+
+To run the integration tests against a dedicated local test database:
+
+```bash
+createdb tradevalue_test
+DATABASE_URL=postgresql://localhost/tradevalue_test \
+  python -m alembic -c backend/alembic.ini upgrade head
+TEST_DATABASE_URL=postgresql://localhost/tradevalue_test \
+  PYTHONPATH=backend pytest -q backend/tests/test_postgres_integration.py
+```
 
 ## Container
 
@@ -64,6 +97,20 @@ populated PostgreSQL database.
 docker build -t tradevalue-api backend
 docker run --rm -p 8000:8000 --env-file backend/.env tradevalue-api
 ```
+
+Required CI builds this exact Dockerfile, starts the resulting image as a
+non-root user against the disposable PostgreSQL service, waits for readiness,
+and calls `/api/health`, `/api/seasons`, and `/api/teams` over the published
+port. Container logs are printed automatically when the smoke check fails. The
+request-serving image excludes ingestion code and its large local source data;
+loaders run separately from a trusted environment.
+
+The supported ingestion commands are documented in
+`app/ScriptingFiles/FullDataScript/README.md`. CI compiles the complete backend
+application and imports every supported ingestion module in a fresh interpreter
+before running the database-backed suite. Obsolete ORM-based loaders are
+retained under `legacy_loaders/` as non-executable recovery references; they are
+not substitutes for PostgreSQL backups.
 
 Production must provide `ENV=nonprod` or `ENV=prod`, a corresponding database
 URL, and the deployed frontend origin in `CORS_ORIGINS`. Apply schema changes as
@@ -91,11 +138,17 @@ its local SQLAlchemy pool deliberately small so horizontally scaled Functions do
 not create excessive client connections. Keep a direct, non-pooled Neon URL for
 schema application and ingestion jobs; do not expose either URL to the frontend.
 
-Apply the schema before the first API deployment:
+Apply migrations using the direct connection before the API deployment:
 
 ```bash
-psql "$NEON_DIRECT_DATABASE_URL" -f backend/database/schema.sql
+DATABASE_URL="$NEON_DIRECT_DATABASE_URL" \
+  python -m alembic -c backend/alembic.ini upgrade head
 ```
+
+The repository's manually dispatched `Database migration` workflow performs
+this as a separately gated environment operation. Configure a direct,
+non-pooled `DATABASE_URL` secret in both GitHub `nonprod` and `prod`
+Environments, and require reviewers for the `prod` Environment.
 
 For the frontend project, set these variables in both Production and Preview:
 

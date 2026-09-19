@@ -13,8 +13,6 @@ BACKEND_DIR = REPO_ROOT / "backend"
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
-from app.database import engine  # noqa: E402
-
 
 SALARY_CAP_QUERY = text("""
 SELECT
@@ -34,6 +32,10 @@ ORDER BY start_year;
 
 def load_salary_cap() -> pd.DataFrame:
     """Load NHL salary-cap history by season."""
+    # Keep database configuration out of module import so callers can replace
+    # this loader in unit tests without first configuring a live database.
+    from app.database import engine
+
     with engine.connect() as connection:
         return pd.read_sql(SALARY_CAP_QUERY, connection)
 

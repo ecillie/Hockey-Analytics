@@ -5,7 +5,15 @@ from datetime import date
 
 import pytest
 
-from app.api.service import ApiProblem, TradeValueService, _identity, _summary, _team
+from app.api.queries import SUMMARY_CTES
+from app.api.service import (
+    ApiProblem,
+    TradeValueService,
+    _buried_relief_cents,
+    _identity,
+    _summary,
+    _team,
+)
 
 
 class Result:
@@ -97,6 +105,29 @@ def summary_row(**overrides):
     }
     row.update(overrides)
     return row
+
+
+def test_projection_query_joins_predictions_to_the_active_model():
+    assert "JOIN active_model am ON am.id = pr.model_version_id" in SUMMARY_CTES
+
+
+@pytest.mark.parametrize(
+    ("season", "expected_cents"),
+    [
+        (2012, 0),
+        (2013, 92_500_000),
+        (2015, 95_000_000),
+        (2017, 102_500_000),
+        (2019, 107_500_000),
+        (2021, 112_500_000),
+        (2025, 115_000_000),
+        (2026, 122_500_000),
+    ],
+)
+def test_buried_relief_uses_the_season_minimum_plus_cba_allowance(
+    season, expected_cents
+):
+    assert _buried_relief_cents(season) == expected_cents
 
 
 def test_mapping_helpers_preserve_nulls_and_round_time():
@@ -289,13 +320,19 @@ def test_contract_team_contracts_and_cap(monkeypatch):
     result = service.team_contracts(10, 2025)
     assert result["contracts"][0]["season"]["capHitCents"] == 800_000_000
 
-    monkeypatch.setattr(service, "_one", lambda *_args, **_kwargs: {
+    cap_session = ScriptedSession(Result(rows=[{
         "salary_cap_cents": 9_550_000_000, "active_cap": 800_000_000,
         "ltir_cap": 200_000_000, "minors_cap": 100_000_000, "total_cap": 1_100_000_000,
-    })
-    cap = service.team_cap(10, 2025)
+    }]))
+    cap_service = TradeValueService(cap_session)
+    monkeypatch.setattr(cap_service, "require_season", lambda _season: None)
+    monkeypatch.setattr(cap_service, "team_summary", lambda _team_id: team)
+    cap = cap_service.team_cap(10, 2025)
     assert cap["capSpaceCents"] == 8_750_000_000
     assert cap["calculationStatus"] == "ESTIMATE"
+    statement, params = cap_session.calls[0]
+    assert "GREATEST(cs.cap_hit_cents - :buried_relief_cents, 0)" in statement
+    assert params["buried_relief_cents"] == 115_000_000
 
 
 def test_contract_without_signing_team_and_unmatched_team_contracts(monkeypatch):

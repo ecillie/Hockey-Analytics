@@ -11,6 +11,7 @@ from app.api.service import (
     TradeValueService,
     _buried_relief_cents,
     _identity,
+    _latest_started_season,
     _summary,
     _team,
 )
@@ -130,6 +131,19 @@ def test_buried_relief_uses_the_season_minimum_plus_cba_allowance(
     assert _buried_relief_cents(season) == expected_cents
 
 
+@pytest.mark.parametrize(
+    ("as_of", "expected"),
+    [
+        (date(2026, 1, 1), 2025),
+        (date(2026, 6, 30), 2025),
+        (date(2026, 7, 1), 2026),
+        (date(2026, 12, 31), 2026),
+    ],
+)
+def test_latest_started_season_uses_july_first_cutoff(as_of, expected):
+    assert _latest_started_season(as_of) == expected
+
+
 def test_mapping_helpers_preserve_nulls_and_round_time():
     row = summary_row(team_id=None, ice_time_seconds=10.6, goals=None)
 
@@ -140,19 +154,37 @@ def test_mapping_helpers_preserve_nulls_and_round_time():
 
 
 def test_season_validation_and_unavailable_current_season():
-    service = TradeValueService(ScriptedSession(Result(scalar=None)))
+    unavailable_session = ScriptedSession(Result(scalar=None))
+    service = TradeValueService(unavailable_session, as_of=date(2026, 6, 30))
     with pytest.raises(ApiProblem) as unavailable:
         service.current_season()
     assert (unavailable.value.status, unavailable.value.code) == (
         503,
         "SEASONS_UNAVAILABLE",
     )
+    assert unavailable_session.calls[0][1] == {"latest_started_season": 2025}
 
-    service = TradeValueService(ScriptedSession(Result(scalar=False)))
+    invalid_session = ScriptedSession(Result(scalar=False))
+    service = TradeValueService(invalid_session, as_of=date(2026, 7, 1))
     with pytest.raises(ApiProblem) as invalid:
-        service.require_season(1900)
+        service.require_season(2027)
     assert invalid.value.code == "INVALID_SEASON"
     assert invalid.value.details == {"season": ["Unknown season."]}
+    statement, params = invalid_session.calls[0]
+    assert "start_year <= :latest_started_season" in statement
+    assert params == {"season": 2027, "latest_started_season": 2026}
+
+
+def test_season_validation_accepts_a_configured_started_season():
+    session = ScriptedSession(Result(scalar=True))
+    service = TradeValueService(session, as_of=date(2026, 7, 1))
+
+    service.require_season(2026)
+
+    assert session.calls[0][1] == {
+        "season": 2026,
+        "latest_started_season": 2026,
+    }
 
 
 def test_seasons_and_missing_identity_errors():
@@ -162,9 +194,15 @@ def test_seasons_and_missing_identity_errors():
         Result(rows=[]),
         Result(rows=[]),
     )
-    service = TradeValueService(session)
+    service = TradeValueService(session, as_of=date(2026, 6, 30))
 
-    assert service.seasons()["currentSeason"] == 2025
+    seasons = service.seasons()
+    assert seasons["currentSeason"] == 2025
+    assert [item["startYear"] for item in seasons["availableSeasons"]] == [2025]
+    season_statement, season_params = session.calls[0]
+    assert "start_year <= :latest_started_season" in season_statement
+    assert season_params == {"latest_started_season": 2025}
+    assert session.calls[1][1] == {"latest_started_season": 2025}
     with pytest.raises(ApiProblem, match="Player not found"):
         service.player_identity(999)
     with pytest.raises(ApiProblem, match="Team not found"):

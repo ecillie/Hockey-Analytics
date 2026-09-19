@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import date
 from math import ceil
 from typing import Any, Iterable
 
@@ -36,6 +37,16 @@ def _buried_relief_cents(season: int) -> int:
     else:
         minimum_salary_cents = 85_000_000
     return minimum_salary_cents + 37_500_000
+
+
+def _latest_started_season(as_of: date) -> int:
+    """Return the newest season start year visible on ``as_of``.
+
+    NHL seasons become viewable on July 1 of their start year. Keeping this
+    rule in one function ensures season discovery, defaults, and validation
+    cannot disagree about whether a future season is available.
+    """
+    return as_of.year if as_of.month >= 7 else as_of.year - 1
 
 
 class ApiProblem(Exception):
@@ -115,8 +126,12 @@ class TradeValueService:
         "capHitCents": "cap_hit_cents",
     }
 
-    def __init__(self, session: Session):
+    def __init__(self, session: Session, *, as_of: date | None = None):
         self.session = session
+        # Capture the date once so every season decision in one service/request
+        # uses the same side of the July 1 boundary. ``as_of`` also keeps the
+        # calendar rule deterministic in tests.
+        self._latest_started_season = _latest_started_season(as_of or date.today())
 
     def _one(self, sql: str, params: dict[str, Any]) -> Any | None:
         return self.session.execute(text(sql), params).mappings().first()
@@ -127,8 +142,8 @@ class TradeValueService:
     def current_season(self) -> int:
         value = self.session.execute(
             text("""SELECT MAX(start_year) FROM seasons
-                    WHERE start_year <= EXTRACT(YEAR FROM CURRENT_DATE)
-                        - CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) < 7 THEN 1 ELSE 0 END""")
+                    WHERE start_year <= :latest_started_season"""),
+            {"latest_started_season": self._latest_started_season},
         ).scalar_one_or_none()
         if value is None:
             raise ApiProblem(503, "SEASONS_UNAVAILABLE", "No seasons are configured.")
@@ -136,15 +151,26 @@ class TradeValueService:
 
     def require_season(self, season: int) -> None:
         exists = self.session.execute(
-            text("SELECT EXISTS(SELECT 1 FROM seasons WHERE start_year = :season)"),
-            {"season": season},
+            text("""SELECT EXISTS(
+                    SELECT 1 FROM seasons
+                    WHERE start_year = :season
+                        AND start_year <= :latest_started_season
+                    )"""),
+            {
+                "season": season,
+                "latest_started_season": self._latest_started_season,
+            },
         ).scalar_one()
         if not exists:
             raise ApiProblem(400, "INVALID_SEASON", "The requested season is not available.", {"season": ["Unknown season."]})
 
     def seasons(self) -> dict[str, Any]:
         rows = self._all(
-            "SELECT start_year, end_year, label, salary_cap_cents FROM seasons ORDER BY start_year"
+            """SELECT start_year, end_year, label, salary_cap_cents
+               FROM seasons
+               WHERE start_year <= :latest_started_season
+               ORDER BY start_year""",
+            {"latest_started_season": self._latest_started_season},
         )
         return {
             "currentSeason": self.current_season(),

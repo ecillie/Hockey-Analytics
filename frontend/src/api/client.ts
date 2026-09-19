@@ -40,7 +40,7 @@ export class ApiClient {
         apiBody?.error?.message ?? 'The API could not complete this request.',
         response.status,
         apiBody?.error?.code ?? `HTTP_${response.status}`,
-        apiBody?.error?.details,
+        apiBody?.error?.details ?? undefined,
       )
     }
     if (!contentType.includes('application/json')) throw new ApiError('The API returned an invalid response.', response.status, 'INVALID_RESPONSE')

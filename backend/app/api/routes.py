@@ -13,7 +13,15 @@ from app.api.service import ApiProblem, TradeValueService
 from app.database import SessionLocal
 
 
-router = APIRouter(prefix="/api")
+router = APIRouter(
+    prefix="/api",
+    responses={
+        400: {"model": schemas.ErrorResponse, "description": "Invalid request"},
+        404: {"model": schemas.ErrorResponse, "description": "Resource not found"},
+        500: {"model": schemas.ErrorResponse, "description": "Internal API error"},
+        503: {"model": schemas.ErrorResponse, "description": "Database unavailable"},
+    },
+)
 
 
 def get_service() -> Generator[TradeValueService, None, None]:
@@ -141,6 +149,14 @@ def search(
     types: str = "player,team",
     limit: Annotated[int, Query(ge=1, le=20)] = 8,
 ):
+    q = q.strip()
+    if len(q) < 2:
+        raise ApiProblem(
+            400,
+            "INVALID_REQUEST",
+            "The request parameters are invalid.",
+            {"q": ["Search queries must contain at least two non-whitespace characters."]},
+        )
     requested = [value.strip() for value in types.split(",") if value.strip()]
     invalid = sorted(set(requested) - {"player", "team"})
     if not requested or invalid:

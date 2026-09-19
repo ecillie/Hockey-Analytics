@@ -127,7 +127,12 @@ Purpose: optional aggregate for two to four players. Query `ids: comma-separated
 
 ## Required response types
 
-The authoritative TypeScript declarations are in `frontend/src/api/types.ts`: `ApiErrorBody`, `Pagination`, `PaginatedResponse<T>`, `RosterStatus`, `Position`, `TeamSummary`, `Team`, `PlayerIdentity`, `PlayerSummary`, `TraditionalSkaterStats`, `AdvancedSkaterStats`, `GoalieStats`, `PlayerStats`, `SeasonHistoryRow`, `HockeyValue`, `HockeyValueHistoryPoint`, `Contract`, `ContractSeason`, `TeamRosterResponse`, `TeamContractsResponse`, `TeamCap`, `SeasonInfo`, `SearchResponse`, `OverviewResponse`, and `CompareResponse`.
+FastAPI's schema definitions are authoritative. `backend/export_openapi.py`
+exports them to `docs/openapi.json`, and `openapi-typescript` generates
+`frontend/src/api/generated.ts`. The public aliases in
+`frontend/src/api/types.ts` are derived from that generated contract rather
+than maintained separately. CI fails if either committed artifact is stale or
+if a frontend endpoint or declared response model no longer matches FastAPI.
 
 ## Backend implementation requirements
 
@@ -138,7 +143,7 @@ The authoritative TypeScript declarations are in `frontend/src/api/types.ts`: `A
 5. Join table-critical values—team, stats, value, cap hit, status—inside `/api/players` and roster aggregates.
 6. Calculate Hockey Value, projections, and team cap server-side. Return the model version with player value output.
 7. Validate enums, IDs, page bounds, seasons, sort fields, comparison size, and search length. Use 400 for invalid input, 404 for missing entities, and the shared error envelope for all failures.
-8. Add response validation/contract tests against the TypeScript shapes before switching `VITE_USE_MOCK_API=false`.
+8. Keep the generated OpenAPI and TypeScript contract checks green before switching `VITE_USE_MOCK_API=false`.
 
 ## Frontend cutover
 

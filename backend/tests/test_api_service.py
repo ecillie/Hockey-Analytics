@@ -111,8 +111,23 @@ def test_projection_query_joins_predictions_to_the_active_model():
     assert "JOIN active_model am ON am.id = pr.model_version_id" in SUMMARY_CTES
 
 
-def test_buried_relief_uses_the_season_minimum_plus_cba_allowance():
-    assert _buried_relief_cents(2025) == 115_000_000
+@pytest.mark.parametrize(
+    ("season", "expected_cents"),
+    [
+        (2012, 0),
+        (2013, 92_500_000),
+        (2015, 95_000_000),
+        (2017, 102_500_000),
+        (2019, 107_500_000),
+        (2021, 112_500_000),
+        (2025, 115_000_000),
+        (2026, 122_500_000),
+    ],
+)
+def test_buried_relief_uses_the_season_minimum_plus_cba_allowance(
+    season, expected_cents
+):
+    assert _buried_relief_cents(season) == expected_cents
 
 
 def test_mapping_helpers_preserve_nulls_and_round_time():

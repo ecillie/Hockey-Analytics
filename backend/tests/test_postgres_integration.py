@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+from datetime import date
 
 import pytest
 from sqlalchemy import create_engine, text
@@ -181,6 +182,23 @@ def test_validation_missing_entities_and_nullable_identity(service):
         "toiHours": None,
         "modelVersion": None,
     }
+
+
+def test_season_catalog_and_validation_share_the_july_first_boundary(engine):
+    with Session(engine) as session:
+        before_cutoff = TradeValueService(session, as_of=date(2026, 6, 30))
+        before_info = before_cutoff.seasons()
+        assert before_info["currentSeason"] == 2025
+        assert max(s["startYear"] for s in before_info["availableSeasons"]) == 2025
+        with pytest.raises(ApiProblem) as future:
+            before_cutoff.require_season(2026)
+        assert future.value.code == "INVALID_SEASON"
+
+        on_cutoff = TradeValueService(session, as_of=date(2026, 7, 1))
+        on_cutoff_info = on_cutoff.seasons()
+        assert on_cutoff_info["currentSeason"] == 2026
+        assert max(s["startYear"] for s in on_cutoff_info["availableSeasons"]) == 2026
+        on_cutoff.require_season(2026)
 
 
 def test_skater_goalie_history_and_value(service):

@@ -31,6 +31,13 @@ curl http://localhost:8000/api/health
 The health endpoint checks database connectivity. A database failure returns a
 shared `DATABASE_UNAVAILABLE` error with HTTP 503.
 
+The season catalog is intentionally historical/current only. A season becomes
+available on July 1 of its start year, so 2026–27 is hidden through June 30,
+2026 and becomes available on July 1, 2026. The same centralized cutoff powers
+the current-season default, `/api/seasons`, and validation on every
+season-scoped endpoint; inserting future contract seasons does not expose them
+as selectable statistics seasons.
+
 Hockey Value is calculated from the canonical all-situations advanced-stat row
 using the repository's position/season replacement-level definition. A stored
 next-season projection is returned only when a prediction payload explicitly

@@ -17,11 +17,12 @@ export function TeamDetailPage() {
   const cap = useApiQuery((signal) => api.getTeamCap(id, season, signal), [id, season])
   if (team.loading) return <LoadingState rows={12} />
   if (!team.data || team.error) return <ErrorState message="Unable to load this team." onRetry={team.retry} />
+  const loadedTeam = team.data
   const statuses: Array<[RosterStatus, string]> = [['ACTIVE', 'NHL'], ['MINORS', 'Minors'], ['LTIR', 'LTIR'], ['UNKNOWN', 'Unknown']]
   return <>
-    <div className="breadcrumb"><Link to="/teams">Teams</Link><span>/</span>{team.data.name}</div>
-    <PageHeader eyebrow={team.data.abbreviation} title={team.data.name} description={`${team.data.city ?? ''} · Active organization`} actions={<SeasonSelector />} />
-    <section className="team-status-strip">{statuses.map(([status, label]) => <div key={status}><span>{label}</span><strong>{team.data?.rosterCounts[status] ?? 0}</strong></div>)}</section>
+    <div className="breadcrumb"><Link to="/teams">Teams</Link><span>/</span>{loadedTeam.name}</div>
+    <PageHeader eyebrow={loadedTeam.abbreviation} title={loadedTeam.name} description={`${loadedTeam.city ?? ''} · Active organization`} actions={<SeasonSelector />} />
+    <section className="team-status-strip">{statuses.map(([status, label]) => <div key={status}><span>{label}</span><strong>{loadedTeam.rosterCounts[status] ?? 0}</strong></div>)}</section>
     {cap.data && <section className="cap-band"><div><span>Salary cap</span><strong>{formatCurrency(cap.data.salaryCapCents, true)}</strong></div><div><span>Active roster</span><strong>{formatCurrency(cap.data.activeRosterCapCents, true)}</strong></div><div><span>Total commitments</span><strong>{formatCurrency(cap.data.totalCommitmentsCents, true)}</strong></div><div><span>Projected space</span><strong className={(cap.data.capSpaceCents ?? 0) < 0 ? 'negative' : 'positive'}>{formatCurrency(cap.data.capSpaceCents, true)}</strong></div><small>{cap.data.calculationStatus === 'ESTIMATE' ? 'Development estimate — backend cap engine required' : 'Authoritative calculation'}</small></section>}
     <section className="section-block"><div className="section-header"><div><span className="section-index">01</span><h2>Organization roster</h2></div><span>{seasonLabel(season)}</span></div>{roster.loading ? <LoadingState /> : roster.error ? <ErrorState message="Unable to load the roster." onRetry={roster.retry} /> : <PlayerTable players={roster.data?.players ?? []} />}</section>
     <section className="section-block"><div className="section-header"><div><span className="section-index">02</span><h2>Contract ledger</h2></div><span>{contracts.data?.contracts.length ?? 0} contracts</span></div>

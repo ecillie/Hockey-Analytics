@@ -45,7 +45,7 @@ Purpose: lightweight service readiness check. Query: none. Response: `{ "status"
 
 ### GET `/api/seasons`
 
-Purpose: the single source for valid seasons and cap ceilings. Query: none. Response: `SeasonInfo`, containing `currentSeason` and `availableSeasons[]` with `startYear`, `endYear`, `label`, and nullable `salaryCapCents`. Used by `getSeasons()`, `SeasonProvider`, and every `SeasonSelector`.
+Purpose: the single source for valid seasons and cap ceilings. Query: none. Response: `SeasonInfo`, containing `currentSeason` and `availableSeasons[]` with `startYear`, `endYear`, `label`, and nullable `salaryCapCents`. A season becomes available on July 1 of its start year: through June 30, the newest allowed start year is the previous calendar year; beginning July 1, it is the current calendar year. Configured future seasons are omitted, and requests for one receive `400 INVALID_SEASON`. Used by `getSeasons()`, `SeasonProvider`, and every `SeasonSelector`.
 
 ### GET `/api/players`
 
@@ -142,7 +142,7 @@ if a frontend endpoint or declared response model no longer matches FastAPI.
 4. Use cents as JSON integers and ratios as JSON numbers. Never serialize currency-formatted strings.
 5. Join table-critical values—team, stats, value, cap hit, status—inside `/api/players` and roster aggregates.
 6. Calculate Hockey Value, projections, and team cap server-side. Return the model version with player value output.
-7. Validate enums, IDs, page bounds, seasons, sort fields, comparison size, and search length. Use 400 for invalid input, 404 for missing entities, and the shared error envelope for all failures.
+7. Validate enums, IDs, page bounds, seasons, sort fields, comparison size, and search length. Season validation must apply the same July 1 availability cutoff as `/api/seasons`, including to seasons that already exist in the database. Use 400 for invalid input, 404 for missing entities, and the shared error envelope for all failures.
 8. Keep the generated OpenAPI and TypeScript contract checks green before switching `VITE_USE_MOCK_API=false`.
 
 ## Frontend cutover

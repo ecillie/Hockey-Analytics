@@ -19,6 +19,7 @@ FULL_DATA_SCRIPT = APP / "ScriptingFiles" / "FullDataScript"
 LEGACY_LOADERS = BACKEND / "legacy_loaders"
 
 SUPPORTED_CLI_MODULES = {
+    "app.ScriptingFiles.FullDataScript.capspace",
     "app.ScriptingFiles.FullDataScript.populate_roster_status",
     "app.ScriptingFiles.FullDataScript.run_all",
 }

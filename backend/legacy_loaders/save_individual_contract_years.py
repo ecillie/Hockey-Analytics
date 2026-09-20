@@ -1,3 +1,9 @@
+"""Retired contract-season recovery reference.
+
+The supported replacement is the schema-native CapSpace gap-fill command in
+``app.ScriptingFiles.FullDataScript.capspace``. Do not revive this ORM loader.
+"""
+
 import sys
 import os
 import json

@@ -53,6 +53,22 @@ class IngestionValidationError(ValueError):
     """Raised before a transaction when a source payload is unsafe to ingest."""
 
 
+def _season_start_year(as_of: date | None = None) -> int:
+    """Return the NHL season start year using the July 1 boundary."""
+    value = as_of or date.today()
+    return value.year if value.month >= 7 else value.year - 1
+
+
+def _ordered_team_abbreviations(value: Any) -> tuple[str, ...]:
+    """Parse the NHL API's chronological ``teamAbbrevs`` value."""
+    abbreviations = []
+    for item in str(value or "").split(","):
+        abbreviation = item.strip().upper()
+        if re.fullmatch(r"[A-Z]{2,4}", abbreviation) and abbreviation not in {"ALL", "TOT"}:
+            abbreviations.append(abbreviation)
+    return tuple(abbreviations)
+
+
 @dataclass(frozen=True)
 class DataQualityReport:
     source: str
@@ -594,7 +610,9 @@ def ingest_nhl_rosters(
     *,
     minimum_teams: int = 30,
     minimum_active_players: int = 500,
+    season_start_year: int | None = None,
 ) -> dict[str, int]:
+    season_start_year = season_start_year or _season_start_year()
     standings = session.get("https://api-web.nhle.com/v1/standings/now", timeout=30).json().get("standings", [])
     teams = {}
     for row in standings:
@@ -628,6 +646,7 @@ def ingest_nhl_rosters(
         cursor = connection.cursor()
         source_ids = _source_ids(cursor)
         moneypuck_id, nhl_id = source_ids["moneypuck"], source_ids["nhl"]
+        _ensure_seasons(cursor, (season_start_year,))
         team_ids = _ensure_teams(cursor, teams, teams)
         active = 0
         for abbreviation, roster in rosters.items():
@@ -657,8 +676,8 @@ def ingest_nhl_rosters(
                         )
                     cursor.execute(
                         """INSERT INTO player_team_stints (player_id,season_start_year,team_id,roster_status)
-                           VALUES (%s,2026,%s,'ACTIVE') ON CONFLICT DO NOTHING""",
-                        (player_id, team_ids[abbreviation]),
+                           VALUES (%s,%s,%s,'ACTIVE') ON CONFLICT DO NOTHING""",
+                        (player_id, season_start_year, team_ids[abbreviation]),
                     )
                     active += 1
         cursor.close()
@@ -742,11 +761,10 @@ def ingest_nhl_stats(session: requests.Session, first_season: int = 2008, last_s
         abbreviations = []
         for rows in fetched.values():
             for _, _, row in rows:
-                team = str(row.get("teamAbbrevs") or "")
-                if "," not in team:
-                    abbreviations.append(team)
+                abbreviations.extend(_ordered_team_abbreviations(row.get("teamAbbrevs")))
         team_ids = _ensure_teams(cursor, abbreviations)
         player_cache = {}
+        final_team_by_player_season: dict[tuple[int, int], int] = {}
         counts = {}
         records_created = records_updated = 0
         for kind, records in fetched.items():
@@ -771,7 +789,10 @@ def ingest_nhl_stats(session: requests.Session, first_season: int = 2008, last_s
                     player_cache[external_id] = player_id
                 player_id = player_cache[external_id]
                 team_text = str(row.get("teamAbbrevs") or "")
-                team_id = team_ids.get(team_text) if "," not in team_text else None
+                ordered_teams = _ordered_team_abbreviations(team_text)
+                team_id = team_ids.get(ordered_teams[0]) if len(ordered_teams) == 1 else None
+                if game_type == 2 and ordered_teams:
+                    final_team_by_player_season[(player_id, season)] = team_ids[ordered_teams[-1]]
                 scope = "TEAM" if team_id else "TOTAL"
                 if kind == "skater":
                     value = (player_id, season, team_id, scope, game_type, nhl_id,
@@ -818,6 +839,19 @@ def ingest_nhl_stats(session: requests.Session, first_season: int = 2008, last_s
             records_created += created
             records_updated += len(values) - created
             counts[kind] = len(values)
+        if final_team_by_player_season:
+            execute_values(
+                cursor,
+                """INSERT INTO player_team_stints
+                       (player_id,season_start_year,team_id)
+                   VALUES %s ON CONFLICT DO NOTHING""",
+                [
+                    (player_id, season, team_id)
+                    for (player_id, season), team_id
+                    in sorted(final_team_by_player_season.items())
+                ],
+                page_size=1000,
+            )
         cursor.close()
     LOGGER.info("NHL stats loaded: skater_rows=%s goalie_rows=%s", counts["skater"], counts["goalie"])
     records_read = sum(len(records) for records in fetched.values())
@@ -827,6 +861,7 @@ def ingest_nhl_stats(session: requests.Session, first_season: int = 2008, last_s
         "records_created": records_created,
         "records_updated": records_updated,
         "records_skipped": records_read - sum(counts.values()),
+        "team_stints": len(final_team_by_player_season),
         "reconciliation_policy": RECONCILIATION_POLICY,
     }
 

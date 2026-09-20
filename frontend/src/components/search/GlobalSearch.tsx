@@ -26,7 +26,7 @@ export function GlobalSearch() {
     <form onSubmit={submit}><Icon name="search" /><input aria-label="Search players and teams" placeholder="Search players or teams" value={query} onChange={(e) => { setQuery(e.target.value); setOpen(true) }} onFocus={() => setOpen(true)} /></form>
     {open && query.length >= 2 && <div className="search-results">
       {!results && <div className="search-message">Searching…</div>}
-      {results?.players.map((player) => <Link key={`p-${player.id}`} to={`/players/${player.id}`} onClick={() => setOpen(false)}><span><strong>{player.fullName}</strong><small>{player.team?.abbreviation ?? 'FA'} · {player.primaryPosition ?? '—'}</small></span><Icon name="arrow" /></Link>)}
+      {results?.players.map((player) => <Link key={`p-${player.id}`} to={`/players/${player.id}`} onClick={() => setOpen(false)}><span><strong>{player.fullName}</strong><small>{player.team?.abbreviation ?? '—'} · {player.primaryPosition ?? '—'}</small></span><Icon name="arrow" /></Link>)}
       {results?.teams.map((team) => <Link key={`t-${team.id}`} to={`/teams/${team.id}`} onClick={() => setOpen(false)}><span><strong>{team.name}</strong><small>{team.abbreviation}</small></span><Icon name="arrow" /></Link>)}
       {results && !hasResults && <div className="search-message">No matching players or teams.</div>}
       {hasResults && <button type="button" onClick={() => navigate(`/players?search=${encodeURIComponent(query)}`)}>View all player results</button>}

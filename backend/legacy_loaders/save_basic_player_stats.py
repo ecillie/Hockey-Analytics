@@ -18,6 +18,12 @@ headers = {
     "Accept": "application/json",
 }
 
+
+def last_team_abbreviation(value):
+    """Preserve the last NHL team in chronological ``teamAbbrevs`` values."""
+    teams = [team.strip().upper() for team in str(value or "").split(",") if team.strip()]
+    return teams[-1] if teams else ""
+
 def make_request_with_rate_limit(url, delay=0.5, max_retries=3):
     """Makes an API request with some delays to avoid getting rate limited, and retries if things go wrong"""
     for attempt in range(max_retries):
@@ -118,7 +124,7 @@ def get_skater_stats():
                         'player_name': season_entry.get('skaterFullName'),
                         'season': season_int,
                         'season_type': 'Regular' if game_type == 2 else 'Playoffs',
-                        'team': season_entry.get('teamAbbrevs'),
+                        'team': last_team_abbreviation(season_entry.get('teamAbbrevs')),
                         'games_played': season_entry.get('gamesPlayed'),
                         'goals': season_entry.get('goals'),
                         'assists': season_entry.get('assists'),
@@ -201,7 +207,7 @@ def get_goalie_stats():
                         'player_name': season_entry.get('goalieFullName'),
                         'season': season_int,
                         'season_type': 'Regular' if game_type == 2 else 'Playoffs',
-                        'team': season_entry.get('teamAbbrevs'),
+                        'team': last_team_abbreviation(season_entry.get('teamAbbrevs')),
                         'games_played': season_entry.get('gamesPlayed'),
                         'wins': season_entry.get('wins'),
                         'losses': season_entry.get('losses'),
@@ -458,4 +464,3 @@ def main():
     get_skater_stats()
     get_goalie_stats()
     
-

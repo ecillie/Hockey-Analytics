@@ -16,6 +16,16 @@ python -m app.ScriptingFiles.FullDataScript.populate_roster_status
 `populate_roster_status` is the supported standalone roster-status refresh.
 Alembic must be at head before either command runs.
 
+For databases populated before season-ending team assignments were persisted,
+preview and apply the idempotent set-based repair from the repository root:
+
+```bash
+PYTHONPATH=backend DATABASE_URL=postgresql://localhost/hockey_analytics_dev \
+  python backend/database/backfill_team_stints.py
+PYTHONPATH=backend DATABASE_URL=postgresql://localhost/hockey_analytics_dev \
+  python backend/database/backfill_team_stints.py --apply
+```
+
 The remaining Python modules in this directory and `roster_status/` are
 implementation modules used by those commands. Required CI imports every one
 of them in a fresh interpreter and compiles the complete backend application.

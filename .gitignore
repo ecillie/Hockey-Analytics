@@ -25,3 +25,4 @@ frontend/*.tsbuildinfo
 **/.env.local
 **/.env.*.local
 /release intiavitive.md
+.venv/

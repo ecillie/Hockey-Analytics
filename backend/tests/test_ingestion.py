@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from contextlib import contextmanager
+from datetime import date
 import json
 from pathlib import Path
 from unittest.mock import Mock, patch
@@ -9,7 +10,7 @@ from unittest.mock import Mock, patch
 import pytest
 import requests
 
-from app.ScriptingFiles.FullDataScript import ingestion
+from app.ScriptingFiles.FullDataScript import ingestion, team_stints
 
 
 FIXTURES = Path(__file__).parent / "fixtures" / "ingestion"
@@ -129,6 +130,15 @@ class NhlRosterSession:
             "defensemen": [],
             "goalies": [],
         })
+
+
+def test_season_and_ordered_team_helpers():
+    assert ingestion._season_start_year(date(2026, 6, 30)) == 2025
+    assert ingestion._season_start_year(date(2026, 7, 1)) == 2026
+    assert ingestion._ordered_team_abbreviations("COL,CAR,DAL") == (
+        "COL", "CAR", "DAL"
+    )
+    assert ingestion._ordered_team_abbreviations(" TOT, bad value,NYR ") == ("NYR",)
 
 
 def nhl_stat_rows(kind, season, game_type, *, goals=5):
@@ -432,6 +442,48 @@ def test_moneypuck_ingestion_is_idempotent_deduplicated_and_updates_typed_values
         assert cap == 9_550_000_000
 
 
+def test_set_based_team_stint_backfill_is_idempotent(migrated_database):
+    import psycopg2
+    from sqlalchemy import text
+
+    ingestion.ingest_moneypuck(
+        MoneyPuckSession(),
+        expected_seasons=(2024, 2025),
+        minimum_rows_per_kind=2,
+        maximum_duplicate_ratio=0.5,
+    )
+
+    connection = psycopg2.connect(TEST_DATABASE_URL)
+    try:
+        assert team_stints.plan_team_stint_backfill(connection) == {
+            "canonical_assignments": 4,
+            "missing_assignments": 4,
+        }
+        assert team_stints.apply_team_stint_backfill(connection) == {
+            "canonical_assignments": 4,
+            "missing_assignments": 4,
+            "inserted_assignments": 4,
+        }
+        connection.commit()
+        assert team_stints.apply_team_stint_backfill(connection) == {
+            "canonical_assignments": 4,
+            "missing_assignments": 0,
+            "inserted_assignments": 0,
+        }
+        connection.commit()
+    finally:
+        connection.close()
+
+    with migrated_database.connect() as connection:
+        rows = connection.execute(text(
+            """SELECT pts.season_start_year, t.abbreviation
+               FROM player_team_stints pts
+               JOIN teams t ON t.id = pts.team_id
+               ORDER BY pts.season_start_year, t.abbreviation"""
+        )).all()
+        assert rows == [(2024, "AAA"), (2024, "BBB"), (2025, "AAA"), (2025, "BBB")]
+
+
 def test_failed_ingestion_rolls_back_players_teams_and_stats(migrated_database):
     from psycopg2.errors import ForeignKeyViolation
     from sqlalchemy import text
@@ -575,6 +627,12 @@ def test_nhl_stats_are_deduplicated_idempotent_and_retain_missing_rows(
         assert connection.execute(text("""
             SELECT count(*) FROM skater_season_stats WHERE stat_scope='TOTAL' AND team_id IS NULL
         """)).scalar_one() == 2
+        stint_teams = connection.execute(text("""
+            SELECT DISTINCT t.abbreviation
+            FROM player_team_stints pts JOIN teams t ON t.id=pts.team_id
+            WHERE pts.season_start_year=2025
+        """)).scalars().all()
+        assert stint_teams == ["BBB"]
 
 
 def test_nhl_roster_loader_enforces_completeness_and_upserts(migrated_database):

@@ -324,6 +324,7 @@ def run_command(database_url: str, *arguments: str, success=True):
     environment = {
         **os.environ,
         "DATABASE_URL": database_url,
+        "DEV_DATABASE_URL": database_url,
         "TEST_DATABASE_URL": database_url,
         "ENV": "dev",
         "PYTHONPATH": "backend",

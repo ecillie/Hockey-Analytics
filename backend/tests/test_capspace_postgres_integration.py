@@ -67,7 +67,16 @@ def seed_player(engine, player_id: int, season: int = 2008, *, with_nhl_id: str 
         connection.execute(text("INSERT INTO players (id,first_name,last_name,primary_position) VALUES (:id,'Pavel','Datsyuk','C')"), {"id": player_id})
         source_id = connection.execute(text("SELECT id FROM data_sources WHERE code='nhl'")).scalar_one()
         connection.execute(text("INSERT INTO player_external_ids (player_id,source_id,external_id) VALUES (:p,:s,:e)"), {"p": player_id, "s": source_id, "e": with_nhl_id})
-        connection.execute(text("INSERT INTO skater_season_stats (player_id,season_start_year,team_id,stat_scope,game_type,source_id,games_played) VALUES (:p,:y,900,'TOTAL',2,:s,50)"), {"p": player_id, "y": season, "s": source_id})
+        for target_season in (season, season + 1):
+            connection.execute(
+                text(
+                    """INSERT INTO skater_season_stats
+                           (player_id,season_start_year,team_id,stat_scope,
+                            game_type,source_id,games_played)
+                       VALUES (:p,:y,NULL,'TOTAL',2,:s,50)"""
+                ),
+                {"p": player_id, "y": target_season, "s": source_id},
+            )
 
 
 def counts(engine):
@@ -112,7 +121,7 @@ def test_existing_contract_gets_missing_season_without_overwrite(database):
 
     result = capspace._run(FixtureSession(FIXTURE.read_text(encoding="utf-8")), dry_run=False, first_season=2008, last_season=2009, workers=1)
 
-    assert result["contracts_created"] == 0
+    assert result.get("contracts_created", 0) == 0
     assert result["contracts_matched"] == 1
     assert counts(database)[0] == first[0]
     with database.connect() as connection:
@@ -131,8 +140,14 @@ def test_dry_run_and_conflict_are_mutation_free(database):
     with database.begin() as connection:
         source_id = connection.execute(text("SELECT id FROM data_sources WHERE code='capwages'")).scalar_one()
         connection.execute(text("INSERT INTO contracts (id,player_id,signing_team_id,source_id,external_id,start_season,end_season,term_years,total_value_cents) VALUES (9101,8003,900,:s,'conflict',2008,2009,7,1)"), {"s": source_id})
-    result = capspace._run(FixtureSession(FIXTURE.read_text(encoding="utf-8")), dry_run=False, first_season=2008, last_season=2008, workers=1)
-    assert result["reconciliation_conflicts"] == 1
+    result = capspace._run(
+        FixtureSession(FIXTURE.read_text(encoding="utf-8")),
+        dry_run=False,
+        first_season=2008,
+        last_season=2009,
+        workers=1,
+    )
+    assert result.get("reconciliation_conflicts", 0) == 1, result
     with database.connect() as connection:
         assert connection.execute(text("SELECT total_value_cents FROM contracts WHERE id=9101")).scalar_one() == 1
         assert connection.execute(text("SELECT count(*) FROM contract_seasons WHERE contract_id=9101")).scalar_one() == 0

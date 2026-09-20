@@ -14,7 +14,7 @@ def validate_reference_data(session) -> None:
         text("SELECT code FROM data_sources ORDER BY code")
     ).scalars().all()
     season_count = session.execute(text("SELECT COUNT(*) FROM seasons")).scalar_one()
-    if source_codes != ["capwages", "moneypuck", "nhl"] or season_count != 22:
+    if source_codes != ["capspace", "capwages", "moneypuck", "nhl"] or season_count != 22:
         raise RuntimeError(
             "initial reference data is incomplete: "
             f"sources={source_codes} seasons={season_count}"

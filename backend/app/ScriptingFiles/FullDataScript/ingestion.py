@@ -1183,5 +1183,18 @@ def run_all() -> dict[str, dict[str, Any]]:
     except (requests.RequestException, RuntimeError, IngestionValidationError) as exc:
         results["capwages"] = existing_capwages_summary()
         LOGGER.warning("CapWages refresh unavailable; retained last-good database snapshot: %s", exc)
+    # Imported lazily to keep the source-native stages independently importable.
+    from app.ScriptingFiles.FullDataScript.capspace import (
+        existing_historical_contract_summary,
+        ingest_historical_contracts,
+    )
+    try:
+        results["historical_contracts"] = ingest_historical_contracts(session)
+    except (requests.RequestException, RuntimeError, IngestionValidationError) as exc:
+        results["historical_contracts"] = existing_historical_contract_summary()
+        LOGGER.warning(
+            "Historical contract refresh unavailable; retained last-good snapshot: %s",
+            exc,
+        )
     results["schedule"] = ingest_schedule(session)
     return results

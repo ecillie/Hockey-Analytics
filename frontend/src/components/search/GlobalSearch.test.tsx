@@ -33,7 +33,7 @@ describe('GlobalSearch', () => {
     const user = userEvent.setup()
     renderSearch()
     await user.type(screen.getByRole('textbox'), 'mc')
-    await waitFor(() => expect(screen.getByText('FA · —')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('— · —')).toBeInTheDocument())
     await user.click(screen.getByText('Connor McDavid'))
     expect(screen.getByRole('status')).toHaveTextContent('/players/101')
   })

@@ -174,7 +174,7 @@ describe('application routes', () => {
     vi.spyOn(api, 'getPlayerContract').mockReturnValue(new Promise((resolve) => { resolveContract = resolve }))
     renderAt('/players/101')
     expect(await screen.findByRole('heading', { name: 'Connor McDavid' })).toBeInTheDocument()
-    expect(screen.getByText('Free agent · Position unavailable')).toBeInTheDocument()
+    expect(screen.getByText('Team unavailable · Position unavailable')).toBeInTheDocument()
     expect(screen.getAllByLabelText('Loading').length).toBeGreaterThan(0)
     await screen.findByText('Current value')
     resolveStats({ ...mockPlayerStats[101], advanced: { ...mockPlayerStats[101].advanced!, penalties: null, penaltiesDrawn: null } })

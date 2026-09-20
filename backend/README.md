@@ -171,3 +171,30 @@ React Router URLs working when opened or refreshed directly.
 The checked-in ingestion CSVs and scripts are excluded from the Vercel Function.
 Run ingestion from a trusted machine or a separate job using
 `requirements-dev.txt` and the direct Neon database URL.
+# Contract ingestion
+
+Current/recent contracts come from CapWages' active-player index. Historical
+gaps are filled by a schema-native source cascade that targets the database's
+missing player-seasons directly: CapSpace by NHL ID first, then CapWages when
+the first source has no contract covering a requested season.
+
+```bash
+PYTHONPATH=backend ENV=dev DATABASE_URL=postgresql://... \
+  python -m app.ScriptingFiles.FullDataScript.capspace --dry-run
+PYTHONPATH=backend ENV=dev DATABASE_URL=postgresql://... \
+  python -m app.ScriptingFiles.FullDataScript.capspace --apply --first-season 2008
+```
+
+CapSpace pages are addressed directly with the NHL ID stored in
+`player_external_ids`. CapWages profiles with an embedded NHL ID must match it;
+older profiles must pass canonical name, slug, and overlapping NHL-stat-season
+checks. Contracts and source snapshots retain the source that supplied them. A
+profile is fetched once even when several seasons are missing. Apply runs fetch
+and commit 100-player batches by
+default, use PostgreSQL bulk inserts for source snapshots and new
+contract-season rows, and retain previously committed batches if a later
+batch fails. Adjust the batch size with `--batch-size`; the HTTP worker cap is
+eight. Run the dry-run and local Pavel Datsyuk smoke case
+(`--nhl-id 8467514`) before any production rollout. Production commands must
+be run only after reviewing the local coverage report; this repository never
+connects to production as part of tests or development.

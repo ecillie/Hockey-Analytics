@@ -16,6 +16,13 @@ For reconstruction, port any still-useful source-specific logic into
 `app/ScriptingFiles/FullDataScript/ingestion.py`, retaining its validation,
 transaction, idempotency, and run-tracking guarantees.
 
+Historical contracts are now recovered by the supported schema-native
+`app.ScriptingFiles.FullDataScript.capspace` loader. It resolves the NHL
+external ID already stored in `player_external_ids`, fetches one CapSpace
+profile per missing player, and reconciles into `contracts` and
+`contract_seasons`. The two contract scripts below remain backward-
+discoverability references only; they must not be used as primary loaders.
+
 These source files are not a database backup. Protect hosted data with actual
 PostgreSQL backups and a tested restore procedure. A backup is only considered
 usable after it has been restored into a disposable database and validated.

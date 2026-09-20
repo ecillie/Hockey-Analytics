@@ -1,4 +1,9 @@
-"""Grabs contract data for all players from CapWages and saves it to the database"""
+"""Retired CapWages recovery reference.
+
+Use ``python -m app.ScriptingFiles.FullDataScript.capspace`` for supported
+historical contract recovery. This legacy file is intentionally quarantined
+and still documents the removed ORM workflow for backward discovery only.
+"""
 import sys
 import os
 
@@ -266,4 +271,3 @@ def save_contracts_to_db():
 
 def main():
     save_contracts_to_db()
-

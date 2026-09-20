@@ -238,7 +238,7 @@ def test_reference_data_smoke_accepts_complete_baseline():
     migration_smoke = import_migration_smoke()
     session = Mock()
     sources = Mock()
-    sources.scalars.return_value.all.return_value = ["capwages", "moneypuck", "nhl"]
+    sources.scalars.return_value.all.return_value = ["capspace", "capwages", "moneypuck", "nhl"]
     seasons = Mock()
     seasons.scalar_one.return_value = 22
     session.execute.side_effect = [sources, seasons]
@@ -324,6 +324,7 @@ def run_command(database_url: str, *arguments: str, success=True):
     environment = {
         **os.environ,
         "DATABASE_URL": database_url,
+        "DEV_DATABASE_URL": database_url,
         "TEST_DATABASE_URL": database_url,
         "ENV": "dev",
         "PYTHONPATH": "backend",
@@ -408,7 +409,7 @@ def test_complete_migration_lifecycle_on_isolated_database(tmp_path):
         run_command(database_url, *alembic, "upgrade", "head")
         run_command(database_url, *alembic, "upgrade", "head")
         current = run_command(database_url, *alembic, "current", "--check-heads")
-        assert "20260910_0001 (head)" in current.stdout
+        assert "20260920_0002 (head)" in current.stdout
         run_command(
             database_url,
             "backend/database/schema_snapshot.py",
@@ -424,9 +425,9 @@ def test_complete_migration_lifecycle_on_isolated_database(tmp_path):
 
         isolated = create_engine(database_url)
         with isolated.connect() as connection:
-            assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == "20260910_0001"
+            assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == "20260920_0002"
             assert connection.execute(text("SELECT COUNT(*) FROM seasons")).scalar_one() == 22
-            assert connection.execute(text("SELECT COUNT(*) FROM data_sources")).scalar_one() == 3
+            assert connection.execute(text("SELECT COUNT(*) FROM data_sources")).scalar_one() == 4
         isolated.dispose()
     finally:
         with admin.connect() as connection:

@@ -309,6 +309,8 @@ def test_nhl_api_parser_rejects_schema_drift():
 
 def test_run_all_uses_last_good_contract_snapshot_but_not_for_other_failures():
     expected = {"players": 600, "contracts": 500, "contract_seasons": 900, "cached": 1}
+    historical = {"total_player_seasons": 100, "covered_player_seasons": 100, "missing_player_seasons": 0, "cached": 1}
+    from app.ScriptingFiles.FullDataScript import capspace
     with (
         patch.object(ingestion, "init_db"),
         patch.object(ingestion, "http_session", return_value=Mock()),
@@ -317,11 +319,27 @@ def test_run_all_uses_last_good_contract_snapshot_but_not_for_other_failures():
         patch.object(ingestion, "ingest_nhl_stats", return_value={}),
         patch.object(ingestion, "ingest_capwages", side_effect=RuntimeError("partial feed")),
         patch.object(ingestion, "existing_capwages_summary", return_value=expected),
+        patch.object(capspace, "ingest_historical_contracts", return_value=historical),
         patch.object(ingestion, "ingest_schedule", return_value={"games": 10}),
     ):
         result = ingestion.run_all()
     assert result["capwages"] == expected
+    assert result["historical_contracts"] == historical
     assert result["schedule"] == {"games": 10}
+
+    with (
+        patch.object(ingestion, "init_db"),
+        patch.object(ingestion, "http_session", return_value=Mock()),
+        patch.object(ingestion, "ingest_moneypuck", return_value={}),
+        patch.object(ingestion, "ingest_nhl_rosters", return_value={}),
+        patch.object(ingestion, "ingest_nhl_stats", return_value={}),
+        patch.object(ingestion, "ingest_capwages", return_value={}),
+        patch.object(capspace, "ingest_historical_contracts", side_effect=RuntimeError("CapSpace down")),
+        patch.object(capspace, "existing_historical_contract_summary", return_value=historical),
+        patch.object(ingestion, "ingest_schedule", return_value={}),
+    ):
+        retained = ingestion.run_all()
+    assert retained["historical_contracts"] == historical
 
     with (
         patch.object(ingestion, "init_db"),
